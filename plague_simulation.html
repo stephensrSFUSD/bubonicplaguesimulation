@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Black Death: A Medieval Survival Simulation</title>
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --parchment: #f4e8d0;
+            --ink-dark: #2b1810;
+            --ink-medium: #4a2c1f;
+            --blood-red: #8b1a1a;
+            --plague-green: #3d5a3d;
+            --gold: #d4af37;
+            --shadow: rgba(43, 24, 16, 0.2);
+        }
+
+        body {
+            font-family: 'Crimson Text', serif;
+            background: linear-gradient(135deg, #2b1810 0%, #1a0f0a 100%);
+            color: var(--ink-dark);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(139, 26, 26, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(61, 90, 61, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .game-container {
+            background: var(--parchment);
+            max-width: 1200px;
+            width: 100%;
+            border: 8px solid var(--ink-dark);
+            border-radius: 4px;
+            box-shadow: 
+                0 0 0 2px var(--gold),
+                0 20px 60px rgba(0, 0, 0, 0.5),
+                inset 0 0 100px rgba(139, 69, 19, 0.1);
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .parchment-texture {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.15;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.4'/%3E%3C/svg%3E");
+        }
+
+        header {
+            background: linear-gradient(180deg, var(--ink-dark) 0%, var(--ink-medium) 100%);
+            color: var(--parchment);
+            padding: 30px;
+            text-align: center;
+            border-bottom: 3px solid var(--gold);
+            position: relative;
+        }
+
+        h1 {
+            font-family: 'MedievalSharp', cursive;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-style: italic;
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            padding: 30px;
+            position: relative;
+        }
+
+        .scenario-section {
+            background: rgba(255, 255, 255, 0.4);
+            padding: 25px;
+            border: 2px solid var(--ink-medium);
+            border-radius: 4px;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .scenario-image {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            margin: 0 auto 20px;
+            display: block;
+            border: 4px solid var(--ink-dark);
+            border-radius: 4px;
+            box-shadow: 0 4px 12px var(--shadow);
+            background: var(--parchment);
+        }
+
+        .image-caption {
+            text-align: center;
+            font-size: 0.9em;
+            font-style: italic;
+            color: var(--ink-medium);
+            margin-top: -15px;
+            margin-bottom: 15px;
+        }
+
+        .scenario-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--blood-red);
+            margin-bottom: 15px;
+            text-align: center;
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 10px;
+        }
+
+        .scenario-description {
+            font-size: 1.15em;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            text-align: justify;
+        }
+
+        .stats-panel {
+            background: rgba(255, 255, 255, 0.4);
+            padding: 20px;
+            border: 2px solid var(--ink-medium);
+            border-radius: 4px;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.3em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-align: center;
+            color: var(--ink-dark);
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 8px;
+        }
+
+        .stat-item {
+            margin: 15px 0;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.6);
+            border-left: 4px solid var(--blood-red);
+            border-radius: 2px;
+        }
+
+        .stat-label {
+            font-weight: 600;
+            font-size: 0.95em;
+            color: var(--ink-medium);
+            margin-bottom: 5px;
+        }
+
+        .stat-bar {
+            height: 20px;
+            background: rgba(139, 26, 26, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid var(--ink-medium);
+        }
+
+        .stat-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--blood-red) 0%, #b32424 100%);
+            transition: width 0.5s ease, background 0.3s ease;
+            box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.3);
+        }
+
+        .stat-fill.healthy {
+            background: linear-gradient(90deg, var(--plague-green) 0%, #4d7a4d 100%);
+        }
+
+        .stat-fill.warning {
+            background: linear-gradient(90deg, #d4af37 0%, #e6c752 100%);
+        }
+
+        .stat-number {
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.1em;
+            margin-top: 5px;
+            color: var(--ink-dark);
+        }
+
+        .decision-box {
+            background: rgba(212, 175, 55, 0.15);
+            border: 3px solid var(--gold);
+            padding: 25px;
+            margin-top: 20px;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .decision-text {
+            font-family: 'Cinzel', serif;
+            font-size: 1.25em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--ink-dark);
+            text-align: center;
+        }
+
+        .choices {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .choice-btn {
+            font-family: 'Crimson Text', serif;
+            font-size: 1.1em;
+            padding: 15px 20px;
+            background: linear-gradient(180deg, var(--parchment) 0%, #e8dcc0 100%);
+            border: 3px solid var(--ink-dark);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            box-shadow: 0 4px 8px var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .choice-btn::before {
+            content: '⚔';
+            position: absolute;
+            left: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5em;
+            transition: left 0.3s ease;
+        }
+
+        .choice-btn:hover {
+            background: linear-gradient(180deg, #fff 0%, var(--parchment) 100%);
+            transform: translateX(5px);
+            box-shadow: 0 6px 16px var(--shadow);
+        }
+
+        .choice-btn:hover::before {
+            left: 15px;
+        }
+
+        .choice-btn:active {
+            transform: translateX(2px) translateY(2px);
+            box-shadow: 0 2px 4px var(--shadow);
+        }
+
+        .event-log {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.5);
+            border: 2px solid var(--ink-medium);
+            border-radius: 4px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .event-log-title {
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            color: var(--blood-red);
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 8px;
+        }
+
+        .event-entry {
+            padding: 12px;
+            margin: 10px 0;
+            background: rgba(255, 255, 255, 0.7);
+            border-left: 4px solid var(--plague-green);
+            border-radius: 2px;
+            font-size: 1em;
+            line-height: 1.6;
+            animation: slideIn 0.5s ease;
+        }
+
+        .event-entry.bad {
+            border-left-color: var(--blood-red);
+        }
+
+        .event-entry.good {
+            border-left-color: var(--gold);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .game-over {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .scenario-section.fade-out {
+            animation: fadeOut 0.4s ease forwards;
+        }
+
+        .scenario-section.fade-in {
+            animation: slideDown 0.6s ease forwards;
+        }
+
+        .choice-btn.selected {
+            background: linear-gradient(180deg, var(--gold) 0%, #b8941f 100%);
+            border-color: var(--blood-red);
+            transform: scale(0.98);
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
+            pointer-events: none;
+        }
+
+        .choice-btn.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .time-passing {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(43, 24, 16, 0.95);
+            color: var(--parchment);
+            padding: 40px 60px;
+            border: 4px solid var(--gold);
+            border-radius: 8px;
+            font-family: 'Cinzel', serif;
+            font-size: 2em;
+            font-weight: 700;
+            z-index: 500;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+            animation: fadeIn 0.3s ease, fadeOut 0.3s ease 1.2s forwards;
+            pointer-events: none;
+        }
+
+        .time-passing::before {
+            content: '⏳';
+            display: block;
+            font-size: 1.5em;
+            text-align: center;
+            margin-bottom: 10px;
+            animation: rotate 1.5s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(180deg); }
+        }
+
+        .game-over-content {
+            background: var(--parchment);
+            padding: 50px;
+            border: 8px solid var(--ink-dark);
+            border-radius: 4px;
+            text-align: center;
+            max-width: 600px;
+            box-shadow: 
+                0 0 0 2px var(--gold),
+                0 20px 60px rgba(0, 0, 0, 0.8);
+        }
+
+        .game-over-title {
+            font-family: 'MedievalSharp', cursive;
+            font-size: 3em;
+            color: var(--blood-red);
+            margin-bottom: 20px;
+        }
+
+        .game-over-text {
+            font-size: 1.3em;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            color: var(--ink-dark);
+        }
+
+        .restart-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 1.3em;
+            padding: 15px 40px;
+            background: linear-gradient(180deg, var(--gold) 0%, #b8941f 100%);
+            border: 3px solid var(--ink-dark);
+            border-radius: 4px;
+            cursor: pointer;
+            color: var(--ink-dark);
+            font-weight: 700;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .restart-btn:hover {
+            background: linear-gradient(180deg, #e6c752 0%, var(--gold) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .week-counter {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5em;
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--blood-red);
+            font-weight: 700;
+            padding: 15px;
+            background: rgba(139, 26, 26, 0.1);
+            border: 2px solid var(--blood-red);
+            border-radius: 4px;
+        }
+
+        @media (max-width: 968px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="parchment-texture"></div>
+        
+        <header>
+            <h1>⚔ The Black Death ⚔</h1>
+            <p class="subtitle">A Medieval Town Survival Simulation • Year 1348</p>
+        </header>
+
+        <div class="main-content">
+            <div class="scenario-section">
+                <div class="week-counter">Week <span id="weekNum">1</span> • <span id="scenarioName">Merchant Port City</span></div>
+                
+                <h2 class="scenario-title" id="eventTitle">A Mysterious Illness Arrives</h2>
+                <p class="scenario-description" id="eventDescription">
+                    Your thriving port city has welcomed merchant ships from distant lands. Within days, sailors begin falling ill with fever and strange swellings. Some whisper of a pestilence spreading across Europe. As town leader, you must decide how to respond.
+                </p>
+
+                <div class="decision-box" id="decisionBox">
+                    <p class="decision-text" id="decisionPrompt">What is your first action?</p>
+                    <div class="choices" id="choicesContainer">
+                        <!-- Choices will be inserted here -->
+                    </div>
+                </div>
+
+                <div class="event-log">
+                    <h3 class="event-log-title">Chronicle of Events</h3>
+                    <div id="logEntries">
+                        <div class="event-entry">Your journey begins. May God protect your town from the pestilence.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-panel">
+                <h3 class="stat-title">Town Status</h3>
+                
+                <div class="stat-item">
+                    <div class="stat-label">Healthy Population</div>
+                    <div class="stat-bar">
+                        <div class="stat-fill healthy" id="healthyBar" style="width: 100%"></div>
+                    </div>
+                    <div class="stat-number"><span id="healthyNum">1000</span> / 1000</div>
+                </div>
+
+                <div class="stat-item">
+                    <div class="stat-label">Infected & Sick</div>
+                    <div class="stat-bar">
+                        <div class="stat-fill" id="infectedBar" style="width: 0%"></div>
+                    </div>
+                    <div class="stat-number"><span id="infectedNum">0</span></div>
+                </div>
+
+                <div class="stat-item">
+                    <div class="stat-label">Economic Strength</div>
+                    <div class="stat-bar">
+                        <div class="stat-fill warning" id="economyBar" style="width: 100%"></div>
+                    </div>
+                    <div class="stat-number"><span id="economyNum">100</span>%</div>
+                </div>
+
+                <div class="stat-item">
+                    <div class="stat-label">Public Trust</div>
+                    <div class="stat-bar">
+                        <div class="stat-fill healthy" id="trustBar" style="width: 100%"></div>
+                    </div>
+                    <div class="stat-number"><span id="trustNum">100</span>%</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="game-over" id="gameOverScreen">
+        <div class="game-over-content">
+            <h2 class="game-over-title" id="gameOverTitle">The Chronicle Ends</h2>
+            <p class="game-over-text" id="gameOverMessage"></p>
+            <button class="restart-btn" onclick="restartGame()">Begin a New Chronicle</button>
+        </div>
+    </div>
+
+    <script>
+        // Game State
+        let gameState = {
+            week: 1,
+            healthy: 1000,
+            infected: 0,
+            dead: 0,
+            economy: 100,
+            trust: 100,
+            quarantineActive: false,
+            portClosed: false,
+            isolationActive: false,
+            phlebotomyUsed: false,
+            prayerUsed: false,
+            baseInfectionRate: 0.05,
+            scenarioType: 'port'
+        };
+
+        // Scenario events with medieval medical misconceptions
+        const scenarios = [
+            {
+                week: 1,
+                title: "A Mysterious Illness Arrives",
+                description: "Your thriving port city has welcomed merchant ships from distant lands. Within days, sailors begin falling ill with fever and strange swellings. Some whisper of a pestilence spreading across Europe. As town leader, you must decide how to respond.",
+                image: "tournai_burial.jpg",
+                imageCaption: "Citizens of Tournai bury plague victims, 14th century manuscript",
+                choices: [
+                    {
+                        text: "Close the port immediately to prevent more infected from arriving",
+                        effect: () => {
+                            gameState.portClosed = true;
+                            gameState.economy -= 20;
+                            gameState.baseInfectionRate -= 0.02;
+                            addLog("The port is sealed. Merchants protest, but no new ships may dock.", "good");
+                        }
+                    },
+                    {
+                        text: "Allow trade to continue—the economy depends on it",
+                        effect: () => {
+                            gameState.baseInfectionRate += 0.03;
+                            addLog("Trade flows freely. The merchants are pleased, but more sick travelers arrive.", "bad");
+                        }
+                    },
+                    {
+                        text: "Quarantine the sick sailors away from the town",
+                        effect: () => {
+                            gameState.quarantineActive = true;
+                            gameState.baseInfectionRate -= 0.015;
+                            gameState.trust -= 5;
+                            addLog("The sick are moved to isolation. Some families protest being separated.", "good");
+                        }
+                    }
+                ]
+            },
+            {
+                week: 3,
+                title: "The Physician's Counsel",
+                description: "Your town physician examines the afflicted. He believes the sickness comes from corrupted air—'miasma' caused by decaying matter and foul odors. He recommends burning aromatic herbs and avoiding night air. Others suggest bloodletting to balance the humors.",
+                image: "plague_doctor.png",
+                imageCaption: "A plague doctor in protective costume, engraving by Paul Fürst, 1656",
+                choices: [
+                    {
+                        text: "Follow the physician's advice about miasma—burn herbs and seal windows",
+                        effect: () => {
+                            gameState.economy -= 5;
+                            addLog("Sweet-smelling smoke fills the streets. The miasma theory offers comfort but little protection.", "bad");
+                            gameState.infected += Math.floor(gameState.healthy * 0.04);
+                        }
+                    },
+                    {
+                        text: "Order bloodletting treatments for those with fever",
+                        effect: () => {
+                            gameState.phlebotomyUsed = true;
+                            gameState.infected += Math.floor(gameState.healthy * 0.03);
+                            const deaths = Math.floor(gameState.infected * 0.3);
+                            gameState.dead += deaths;
+                            gameState.infected -= deaths;
+                            addLog("Barber-surgeons drain blood from the feverish. Many grow weaker and die faster.", "bad");
+                        }
+                    },
+                    {
+                        text: "Ignore the physician and isolate the sick from the healthy",
+                        effect: () => {
+                            gameState.isolationActive = true;
+                            gameState.baseInfectionRate -= 0.02;
+                            gameState.trust -= 10;
+                            addLog("Despite objections, you enforce separation. Some call you cruel, but spread slows.", "good");
+                        }
+                    }
+                ]
+            },
+            {
+                week: 5,
+                title: "The Marketplace Dilemma",
+                description: "The bustling marketplace is the heart of your town's economy, but crowds gather daily for trade. You notice the illness spreads fastest where people congregate. Closing it would cripple commerce but might save lives.",
+                image: "triumph_of_death.jpg",
+                imageCaption: "The Triumph of Death by Pieter Bruegel the Elder, 1562",
+                choices: [
+                    {
+                        text: "Close the marketplace and ban large gatherings",
+                        effect: () => {
+                            gameState.economy -= 30;
+                            gameState.baseInfectionRate -= 0.025;
+                            gameState.trust -= 15;
+                            addLog("The marketplace stands empty. Merchants rage, but fewer people fall sick.", "good");
+                        }
+                    },
+                    {
+                        text: "Keep markets open but require people to maintain distance",
+                        effect: () => {
+                            gameState.economy -= 10;
+                            gameState.baseInfectionRate -= 0.01;
+                            addLog("You attempt to enforce spacing. Some comply, but crowds still form.", "good");
+                        }
+                    },
+                    {
+                        text: "Business as usual—the economy cannot afford disruption",
+                        effect: () => {
+                            gameState.baseInfectionRate += 0.03;
+                            addLog("Markets thrive with activity. The plague thrives too, spreading through the crowds.", "bad");
+                        }
+                    }
+                ]
+            },
+            {
+                week: 7,
+                title: "Desperate Measures",
+                description: "A quarter of your population has fallen ill. The church says this pestilence is divine punishment for sin. The bishop urges mass prayer gatherings and processions to beg God's mercy. Others suggest fleeing the city entirely.",
+                image: "dance_of_death.png",
+                imageCaption: "The Dance of Death, woodcut by Michael Wolgemut, 1493",
+                choices: [
+                    {
+                        text: "Organize prayer processions throughout the town",
+                        effect: () => {
+                            gameState.prayerUsed = true;
+                            gameState.trust += 15;
+                            gameState.baseInfectionRate += 0.04;
+                            addLog("Crowds gather in prayer, seeking divine intervention. The plague spreads faster in the masses.", "bad");
+                        }
+                    },
+                    {
+                        text: "Ban large gatherings, even religious ones",
+                        effect: () => {
+                            gameState.trust -= 25;
+                            gameState.baseInfectionRate -= 0.02;
+                            addLog("The bishop condemns you as faithless. The people are angry, but gatherings cease.", "good");
+                        }
+                    },
+                    {
+                        text: "Allow those who wish to flee to leave the city",
+                        effect: () => {
+                            const fleeing = Math.floor(gameState.healthy * 0.3);
+                            gameState.healthy -= fleeing;
+                            gameState.economy -= 25;
+                            addLog(`${fleeing} citizens flee in terror, some carrying the plague to other regions.`, "bad");
+                        }
+                    }
+                ]
+            },
+            {
+                week: 10,
+                title: "The Turning Point",
+                description: "Months have passed. Bodies pile faster than they can be buried. Your decisions have shaped your town's fate. Some medieval cities lost half their population to the Black Death, while others fared better. How will yours be remembered?",
+                image: "tournai_burial.jpg",
+                imageCaption: "Mass burial during the Black Death, 14th century",
+                choices: [
+                    {
+                        text: "Enforce strict isolation of all sick individuals",
+                        effect: () => {
+                            gameState.baseInfectionRate -= 0.03;
+                            gameState.trust -= 10;
+                            addLog("Harsh isolation measures take effect. Families weep, but the tide begins to turn.", "good");
+                        }
+                    },
+                    {
+                        text: "Focus resources on caring for the sick with compassion",
+                        effect: () => {
+                            gameState.trust += 10;
+                            const saved = Math.floor(gameState.infected * 0.15);
+                            gameState.infected -= saved;
+                            gameState.healthy += saved;
+                            addLog("Caregivers risk their lives for others. Some patients recover through rest and care.", "good");
+                        }
+                    },
+                    {
+                        text: "Order disposal of rat-infested areas and improve sanitation",
+                        effect: () => {
+                            gameState.baseInfectionRate -= 0.025;
+                            gameState.economy -= 15;
+                            addLog("Though you don't know about disease vectors, cleaning reduces rat populations. The plague weakens.", "good");
+                        }
+                    }
+                ]
+            }
+        ];
+
+        // Initialize game
+        function initGame() {
+            showScenario(0);
+        }
+
+        // Show scenario
+        function showScenario(index) {
+            if (index >= scenarios.length) {
+                endGame();
+                return;
+            }
+
+            const scenario = scenarios[index];
+            document.getElementById('eventTitle').textContent = scenario.title;
+            document.getElementById('eventDescription').textContent = scenario.description;
+            document.getElementById('decisionPrompt').textContent = "What will you do?";
+            
+            // Add or update scenario image
+            let imageContainer = document.getElementById('scenarioImageContainer');
+            if (!imageContainer) {
+                imageContainer = document.createElement('div');
+                imageContainer.id = 'scenarioImageContainer';
+                const titleElement = document.getElementById('eventTitle');
+                titleElement.parentNode.insertBefore(imageContainer, titleElement.nextSibling);
+            }
+            
+            if (scenario.image) {
+                imageContainer.innerHTML = `
+                    <img src="${scenario.image}" 
+                         alt="${scenario.imageCaption}" 
+                         class="scenario-image"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                         crossorigin="anonymous">
+                    <div style="display:none; width: 100%; max-width: 500px; height: 300px; margin: 0 auto 20px; background: linear-gradient(135deg, #4a2c1f 0%, #2b1810 100%); border: 4px solid #2b1810; border-radius: 4px; align-items: center; justify-content: center; color: #f4e8d0; font-family: 'Cinzel', serif; font-size: 1.2em; text-align: center; padding: 20px; box-shadow: 0 4px 12px rgba(43, 24, 16, 0.2);">
+                        📜 ${scenario.imageCaption} 📜
+                    </div>
+                    <p class="image-caption">${scenario.imageCaption}</p>
+                `;
+            } else {
+                imageContainer.innerHTML = '';
+            }
+            
+            const choicesContainer = document.getElementById('choicesContainer');
+            choicesContainer.innerHTML = '';
+            
+            scenario.choices.forEach((choice, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'choice-btn';
+                btn.textContent = choice.text;
+                btn.onclick = () => makeChoice(choice, index);
+                choicesContainer.appendChild(btn);
+            });
+        }
+
+        // Handle choice
+        function makeChoice(choice, scenarioIndex) {
+            // Highlight selected button and disable others
+            const allButtons = document.querySelectorAll('.choice-btn');
+            allButtons.forEach(btn => {
+                if (btn.textContent === choice.text) {
+                    btn.classList.add('selected');
+                } else {
+                    btn.classList.add('disabled');
+                }
+            });
+
+            // Apply choice effect
+            choice.effect();
+            
+            // Progress week
+            if (scenarioIndex < scenarios.length - 1) {
+                gameState.week = scenarios[scenarioIndex + 1].week;
+            } else {
+                gameState.week += 3;
+            }
+            
+            // Simulate disease spread
+            simulateWeeks();
+            
+            // Update stats with slight delay for visual feedback
+            setTimeout(() => {
+                updateStats();
+                document.getElementById('weekNum').textContent = gameState.week;
+            }, 300);
+            
+            // Check game over conditions
+            if (gameState.healthy <= 100 || gameState.economy <= 0 || gameState.trust <= 10) {
+                setTimeout(() => {
+                    endGame();
+                }, 1000);
+                return;
+            }
+            
+            // Show "time passing" overlay
+            const timePassing = document.createElement('div');
+            timePassing.className = 'time-passing';
+            timePassing.innerHTML = `Weeks Pass...`;
+            document.body.appendChild(timePassing);
+            
+            // Fade out current scenario
+            setTimeout(() => {
+                const scenarioSection = document.querySelector('.scenario-section');
+                scenarioSection.classList.add('fade-out');
+            }, 800);
+            
+            // Remove time passing overlay
+            setTimeout(() => {
+                timePassing.remove();
+            }, 1500);
+            
+            // Move to next scenario with fade in
+            setTimeout(() => {
+                const scenarioSection = document.querySelector('.scenario-section');
+                scenarioSection.classList.remove('fade-out');
+                scenarioSection.classList.add('fade-in');
+                
+                showScenario(scenarioIndex + 1);
+                
+                // Remove fade-in class after animation
+                setTimeout(() => {
+                    scenarioSection.classList.remove('fade-in');
+                }, 600);
+            }, 1600);
+        }
+
+        // Simulate disease progression
+        function simulateWeeks() {
+            // Calculate infection
+            let newInfections = Math.floor(gameState.healthy * gameState.baseInfectionRate);
+            
+            // Trust affects compliance - low trust means people ignore health measures
+            let trustMultiplier = 1.0;
+            if (gameState.trust < 30) {
+                trustMultiplier = 1.5; // Very low trust = people rebel, infection spreads faster
+            } else if (gameState.trust < 50) {
+                trustMultiplier = 1.2; // Low trust = partial compliance
+            } else if (gameState.trust > 80) {
+                trustMultiplier = 0.85; // High trust = better compliance with measures
+            }
+            
+            // Apply modifiers
+            if (gameState.quarantineActive) newInfections *= 0.7;
+            if (gameState.isolationActive) newInfections *= 0.6;
+            if (gameState.portClosed) newInfections *= 0.8;
+            
+            // Apply trust modifier
+            newInfections = Math.floor(newInfections * trustMultiplier);
+            
+            gameState.infected += newInfections;
+            gameState.healthy -= newInfections;
+            
+            // Calculate deaths (30-60% of infected die in medieval times)
+            const deaths = Math.floor(gameState.infected * (0.3 + Math.random() * 0.3));
+            gameState.dead += deaths;
+            gameState.infected -= deaths;
+            
+            // Some recover
+            const recovered = Math.floor(gameState.infected * 0.1);
+            gameState.infected -= recovered;
+            gameState.healthy += recovered;
+            
+            // Low trust warnings
+            if (gameState.trust < 30 && Math.random() > 0.5) {
+                addLog("Citizens openly defy your quarantine orders. The sick move freely through the streets.", "bad");
+            } else if (gameState.trust < 50 && Math.random() > 0.7) {
+                addLog("Grumbling in the streets. Some question your authority to impose restrictions.", "bad");
+            }
+            
+            // Ensure no negatives
+            gameState.healthy = Math.max(0, gameState.healthy);
+            gameState.infected = Math.max(0, gameState.infected);
+            gameState.economy = Math.max(0, gameState.economy);
+            gameState.trust = Math.max(0, gameState.trust);
+        }
+
+        // Update stats display
+        function updateStats() {
+            const totalPop = 1000;
+            
+            document.getElementById('healthyNum').textContent = gameState.healthy;
+            document.getElementById('infectedNum').textContent = gameState.infected;
+            document.getElementById('economyNum').textContent = Math.round(gameState.economy);
+            document.getElementById('trustNum').textContent = Math.round(gameState.trust);
+            
+            const healthyPercent = (gameState.healthy / totalPop) * 100;
+            const infectedPercent = (gameState.infected / totalPop) * 100;
+            
+            document.getElementById('healthyBar').style.width = healthyPercent + '%';
+            document.getElementById('infectedBar').style.width = infectedPercent + '%';
+            document.getElementById('economyBar').style.width = gameState.economy + '%';
+            document.getElementById('trustBar').style.width = gameState.trust + '%';
+            
+            // Color coding
+            const healthyBar = document.getElementById('healthyBar');
+            if (healthyPercent > 60) {
+                healthyBar.className = 'stat-fill healthy';
+            } else if (healthyPercent > 30) {
+                healthyBar.className = 'stat-fill warning';
+            } else {
+                healthyBar.className = 'stat-fill';
+            }
+        }
+
+        // Add log entry
+        function addLog(message, type = '') {
+            const logEntries = document.getElementById('logEntries');
+            const entry = document.createElement('div');
+            entry.className = 'event-entry ' + type;
+            entry.textContent = message;
+            logEntries.insertBefore(entry, logEntries.firstChild);
+            
+            // Limit log entries
+            while (logEntries.children.length > 10) {
+                logEntries.removeChild(logEntries.lastChild);
+            }
+        }
+
+        // End game
+        function endGame() {
+            const survivalRate = ((gameState.healthy / 1000) * 100).toFixed(1);
+            const deathRate = ((gameState.dead / 1000) * 100).toFixed(1);
+            
+            let message = '';
+            let title = '';
+            
+            if (gameState.trust <= 10) {
+                title = 'Rebellion and Chaos';
+                message = `After ${gameState.week} weeks, your authority has collapsed. With only ${Math.round(gameState.trust)}% public trust, citizens refuse to follow your health orders. They tear down quarantine barriers, hide their sick, and openly defy restrictions. The plague spreads unchecked. ${gameState.dead} have died. History shows that effective plague response required both wise policies AND public cooperation.`;
+            } else if (gameState.healthy <= 100) {
+                title = 'The Town Falls';
+                message = `After ${gameState.week} weeks, your town has been devastated. Only ${gameState.healthy} survivors remain of 1,000 citizens. ${gameState.dead} have perished. The historical Black Death killed 30-60% of Europe's population. Your decisions determined whether your town fared better or worse than history.`;
+            } else if (survivalRate >= 70) {
+                title = 'A Remarkable Survival';
+                message = `After ${gameState.week} weeks, ${gameState.healthy} of your 1,000 citizens survived (${survivalRate}% survival rate). Your decisions saved more lives than most medieval towns. By enforcing isolation and limiting gatherings—even without understanding germs—you prevented the worst. ${gameState.trust > 70 ? 'High public trust meant citizens followed your health measures willingly.' : 'Despite some resistance, your policies worked.'} Many historical cities lost half their population.`;
+            } else if (survivalRate >= 50) {
+                title = 'A Costly Victory';
+                message = `After ${gameState.week} weeks, ${gameState.healthy} citizens remain (${survivalRate}% survival rate). ${gameState.dead} died—close to the historical average for plague-struck cities. Your decisions reflected the difficult choices medieval leaders faced. ${gameState.trust < 50 ? 'Low public trust undermined some of your health measures.' : 'Public cooperation helped your policies succeed.'} Historians note that cities enforcing quarantine fared better than those relying on prayer or bloodletting.`;
+            } else {
+                title = 'A Dark Chapter';
+                message = `After ${gameState.week} weeks, only ${gameState.healthy} survived of 1,000 (${survivalRate}% survival rate). ${gameState.dead} perished. Your town suffered worse than most. ${gameState.trust < 40 ? 'Widespread distrust of your leadership led citizens to ignore health orders, accelerating the spread.' : ''} Medieval misconceptions like miasma theory, bloodletting, and mass gatherings accelerated death. Modern understanding of disease transmission shows isolation and sanitation were the true defenses.`;
+            }
+            
+            message += `\n\nFinal Economy: ${Math.round(gameState.economy)}% | Public Trust: ${Math.round(gameState.trust)}%`;
+            
+            document.getElementById('gameOverTitle').textContent = title;
+            document.getElementById('gameOverMessage').textContent = message;
+            document.getElementById('gameOverScreen').style.display = 'flex';
+        }
+
+        // Restart game
+        function restartGame() {
+            gameState = {
+                week: 1,
+                healthy: 1000,
+                infected: 0,
+                dead: 0,
+                economy: 100,
+                trust: 100,
+                quarantineActive: false,
+                portClosed: false,
+                isolationActive: false,
+                phlebotomyUsed: false,
+                prayerUsed: false,
+                baseInfectionRate: 0.05,
+                scenarioType: 'port'
+            };
+            
+            document.getElementById('gameOverScreen').style.display = 'none';
+            document.getElementById('logEntries').innerHTML = '<div class="event-entry">Your journey begins anew. May wisdom guide your choices.</div>';
+            
+            updateStats();
+            document.getElementById('weekNum').textContent = 1;
+            initGame();
+        }
+
+        // Start game on load
+        window.onload = initGame;
+    </script>
+</body>
+</html>
