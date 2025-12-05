@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -572,6 +573,7 @@
             cleanedHands: false,
             stayedClean: false,
             helpedOthers: 0,
+            peopleTalkedTo: 0,
             currentLocation: 0,
             gameStarted: false
         };
@@ -681,11 +683,13 @@
                         diceRoll: true,
                         difficulty: 13,
                         success: () => {
+                            gameState.peopleTalkedTo++;
                             gameState.hasInfo = true;
                             gameState.inventory.push('Travel Map');
                             return "You correctly read Antonio's body language! He gives you honest advice: 'Avoid Venice—plague is terrible there. Head for countryside!'";
                         },
                         failure: () => {
+                            gameState.peopleTalkedTo++;
                             gameState.gold -= 15;
                             gameState.health -= 15;
                             return "You misjudged Antonio! He gave you FALSE directions that led through rat-infested alleys where fleas bit you, and he picked your pocket!";
@@ -790,11 +794,13 @@
                         diceRoll: true,
                         difficulty: 14,
                         success: () => {
+                            gameState.peopleTalkedTo++;
                             gameState.gold += 20;
                             gameState.hasInfo = true;
                             return "Your physical presence intimidated Father Marco! He gave you money and told you which towns to avoid to get rid of you.";
                         },
                         failure: () => {
+                            gameState.peopleTalkedTo++;
                             gameState.gold -= 15;
                             gameState.health -= 15;
                             return "Father Marco called the villagers to defend him! They beat you and chased you through rat-filled streets. Fleas bit you while you escaped!";
@@ -868,11 +874,13 @@
                         diceRoll: true,
                         difficulty: 16,
                         success: () => {
+                            gameState.peopleTalkedTo++;
                             gameState.health += 15;
                             gameState.hasInfo = true;
                             return "Captain Rosa likes you! She shares which roads are safest and gives you access to clean water wells. Very valuable!";
                         },
                         failure: () => {
+                            gameState.peopleTalkedTo++;
                             gameState.gold -= 20;
                             gameState.health -= 15;
                             return "Captain Rosa is suspicious of travelers. She quarantines you in a room with sick people for two days. The room was full of rats and you were bitten by fleas!";
@@ -895,11 +903,13 @@
                         diceRoll: true,
                         difficulty: 17,
                         success: () => {
+                            gameState.peopleTalkedTo++;
                             gameState.health += 25;
                             gameState.stayedClean = true;
                             return "The monks let you rest in their guest house for three days. You recover significantly!";
                         },
                         failure: () => {
+                            gameState.peopleTalkedTo++;
                             gameState.gold -= 15;
                             gameState.health -= 10;
                             return "The monks refuse entry angrily. They throw rocks and you had to flee through thorny bushes. You're injured.";
@@ -961,11 +971,13 @@
                         diceRoll: true,
                         difficulty: 16,
                         success: () => {
+                            gameState.peopleTalkedTo++;
                             gameState.helpedOthers++;
                             gameState.hasInfo = true;
                             return "Brother Marco shares from a distance: 'Those who wash constantly and avoid touching the sick live longer.' Valuable!";
                         },
                         failure: () => {
+                            gameState.peopleTalkedTo++;
                             gameState.health -= 30;
                             return "Brother Marco is VERY sick with plague. You got too close - he had fleas on his robes that jumped onto you. You were bitten multiple times.";
                         },
@@ -1016,9 +1028,11 @@
                         diceRoll: true,
                         difficulty: 15,
                         success: () => {
+                            gameState.peopleTalkedTo++;
                             return "Elena is honest! She shows you hidden paths that avoid all sick areas. You reach the mountains safely!\n\nSUCCESS!";
                         },
                         failure: () => {
+                            gameState.peopleTalkedTo++;
                             gameState.health -= 45;
                             if (gameState.health <= 0) return "Elena was a fraud! She led you directly into rat-infested plague wards and stole your gold. Fleas bit you everywhere. You collapsed.\n\nFAILURE";
                             return "Elena was a fraud! She led you through rat-infested areas where fleas bit you, and she stole your gold. You barely escaped.\n\nPARTIAL";
@@ -1919,8 +1933,8 @@
         function calculateScore(survived) {
             const survivalBonus = survived ? 50 : 0;
             const helpBonus = gameState.helpedOthers * 10;
-            const statBonus = (gameState.wisdom + gameState.strength + gameState.luck + gameState.charisma) * 5;
-            return gameState.townsVisited * 20 + gameState.gold + survivalBonus + helpBonus + statBonus;
+            const talkBonus = gameState.peopleTalkedTo * 5;
+            return gameState.health + gameState.gold + (gameState.townsVisited * 20) + survivalBonus + helpBonus + talkBonus;
         }
 
         function showGameOver(survived) {
@@ -1943,10 +1957,11 @@
                     <div class="knowledge-box">
                         <h3>📊 ${gameState.characterName}'s Final Score: ${finalScore}</h3>
                         <p>
-                            Towns Visited: ${gameState.townsVisited} × 20 = ${gameState.townsVisited * 20}<br>
+                            Health Remaining: ${gameState.health}<br>
                             Gold Remaining: ${gameState.gold}<br>
+                            Towns Visited: ${gameState.townsVisited} × 20 = ${gameState.townsVisited * 20}<br>
                             People Helped: ${gameState.helpedOthers} × 10 = ${gameState.helpedOthers * 10}<br>
-                            Character Stats: ${gameState.wisdom + gameState.strength + gameState.luck + gameState.charisma} × 5 = ${(gameState.wisdom + gameState.strength + gameState.luck + gameState.charisma) * 5}<br>
+                            People Talked To: ${gameState.peopleTalkedTo} × 5 = ${gameState.peopleTalkedTo * 5}<br>
                             Survival Bonus: ${survived ? 50 : 0}
                         </p>
                     </div>
