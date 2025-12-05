@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Black Death: A Medieval Survival Simulation</title>
-    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <title>Plague Survivor: A Medieval Adventure</title>
     <style>
         * {
             margin: 0;
@@ -12,229 +12,114 @@
             box-sizing: border-box;
         }
 
-        :root {
-            --parchment: #f4e8d0;
-            --ink-dark: #2b1810;
-            --ink-medium: #4a2c1f;
-            --blood-red: #8b1a1a;
-            --plague-green: #3d5a3d;
-            --gold: #d4af37;
-            --shadow: rgba(43, 24, 16, 0.2);
-        }
-
         body {
-            font-family: 'Crimson Text', serif;
-            background: linear-gradient(135deg, #2b1810 0%, #1a0f0a 100%);
-            color: var(--ink-dark);
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #2c1810 0%, #4a2c1a 100%);
+            color: #f4e4c1;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             padding: 20px;
-            position: relative;
-            overflow-x: hidden;
         }
 
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: 
-                radial-gradient(circle at 20% 30%, rgba(139, 26, 26, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(61, 90, 61, 0.1) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .game-container {
-            background: var(--parchment);
-            max-width: 1200px;
-            width: 100%;
-            border: 8px solid var(--ink-dark);
-            border-radius: 4px;
-            box-shadow: 
-                0 0 0 2px var(--gold),
-                0 20px 60px rgba(0, 0, 0, 0.5),
-                inset 0 0 100px rgba(139, 69, 19, 0.1);
-            position: relative;
-            z-index: 1;
-            overflow: hidden;
-        }
-
-        .parchment-texture {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            opacity: 0.15;
-            pointer-events: none;
-            background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.4'/%3E%3C/svg%3E");
-        }
-
-        header {
-            background: linear-gradient(180deg, var(--ink-dark) 0%, var(--ink-medium) 100%);
-            color: var(--parchment);
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(30, 20, 10, 0.9);
+            border: 3px solid #8b6914;
+            border-radius: 10px;
             padding: 30px;
-            text-align: center;
-            border-bottom: 3px solid var(--gold);
-            position: relative;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
         }
 
         h1 {
-            font-family: 'MedievalSharp', cursive;
+            text-align: center;
+            color: #d4af37;
             font-size: 2.5em;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
         }
 
         .subtitle {
-            font-style: italic;
-            font-size: 1.1em;
-            opacity: 0.9;
-        }
-
-        .main-content {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 20px;
-            padding: 30px;
-            position: relative;
-        }
-
-        .scenario-section {
-            background: rgba(255, 255, 255, 0.4);
-            padding: 25px;
-            border: 2px solid var(--ink-medium);
-            border-radius: 4px;
-            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .scenario-image {
-            width: 100%;
-            max-width: 500px;
-            height: auto;
-            margin: 0 auto 20px;
-            display: block;
-            border: 4px solid var(--ink-dark);
-            border-radius: 4px;
-            box-shadow: 0 4px 12px var(--shadow);
-            background: var(--parchment);
-        }
-
-        .image-caption {
             text-align: center;
-            font-size: 0.9em;
             font-style: italic;
-            color: var(--ink-medium);
-            margin-top: -15px;
-            margin-bottom: 15px;
+            margin-bottom: 30px;
+            color: #c9a961;
         }
 
-        .scenario-title {
-            font-family: 'Cinzel', serif;
-            font-size: 1.8em;
-            font-weight: 700;
-            color: var(--blood-red);
-            margin-bottom: 15px;
-            text-align: center;
-            border-bottom: 2px solid var(--gold);
-            padding-bottom: 10px;
-        }
-
-        .scenario-description {
-            font-size: 1.15em;
-            line-height: 1.8;
-            margin-bottom: 25px;
-            text-align: justify;
-        }
-
-        .stats-panel {
-            background: rgba(255, 255, 255, 0.4);
+        .character-sheet {
+            background: rgba(60, 40, 20, 0.6);
+            border: 2px solid #8b6914;
+            border-radius: 8px;
             padding: 20px;
-            border: 2px solid var(--ink-medium);
-            border-radius: 4px;
-            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 25px;
         }
 
-        .stat-title {
-            font-family: 'Cinzel', serif;
-            font-size: 1.3em;
-            font-weight: 700;
-            margin-bottom: 15px;
+        .stat-row {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .stat {
+            background: rgba(40, 25, 10, 0.8);
+            padding: 12px 20px;
+            border-radius: 5px;
+            border: 1px solid #654321;
             text-align: center;
-            color: var(--ink-dark);
-            border-bottom: 2px solid var(--gold);
-            padding-bottom: 8px;
-        }
-
-        .stat-item {
-            margin: 15px 0;
-            padding: 12px;
-            background: rgba(255, 255, 255, 0.6);
-            border-left: 4px solid var(--blood-red);
-            border-radius: 2px;
+            min-width: 140px;
         }
 
         .stat-label {
-            font-weight: 600;
-            font-size: 0.95em;
-            color: var(--ink-medium);
+            font-size: 0.9em;
+            color: #c9a961;
             margin-bottom: 5px;
         }
 
-        .stat-bar {
-            height: 20px;
-            background: rgba(139, 26, 26, 0.2);
-            border-radius: 10px;
+        .stat-value {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #d4af37;
+        }
+
+        .health-bar {
+            width: 100%;
+            height: 25px;
+            background: #331a0a;
+            border: 2px solid #654321;
+            border-radius: 5px;
             overflow: hidden;
-            position: relative;
-            border: 1px solid var(--ink-medium);
+            margin-top: 10px;
         }
 
-        .stat-fill {
+        .health-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--blood-red) 0%, #b32424 100%);
-            transition: width 0.5s ease, background 0.3s ease;
-            box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.3);
+            background: linear-gradient(90deg, #c41e3a 0%, #e63946 100%);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9em;
         }
 
-        .stat-fill.healthy {
-            background: linear-gradient(90deg, var(--plague-green) 0%, #4d7a4d 100%);
-        }
-
-        .stat-fill.warning {
-            background: linear-gradient(90deg, #d4af37 0%, #e6c752 100%);
-        }
-
-        .stat-number {
-            text-align: center;
-            font-weight: 700;
-            font-size: 1.1em;
-            margin-top: 5px;
-            color: var(--ink-dark);
-        }
-
-        .decision-box {
-            background: rgba(212, 175, 55, 0.15);
-            border: 3px solid var(--gold);
+        .story-box {
+            background: rgba(50, 35, 20, 0.8);
+            border: 2px solid #8b6914;
+            border-radius: 8px;
             padding: 25px;
-            margin-top: 20px;
-            border-radius: 4px;
-            box-shadow: 0 4px 12px var(--shadow);
+            margin-bottom: 20px;
+            line-height: 1.8;
+            font-size: 1.1em;
         }
 
-        .decision-text {
-            font-family: 'Cinzel', serif;
-            font-size: 1.25em;
-            font-weight: 600;
-            margin-bottom: 20px;
-            color: var(--ink-dark);
-            text-align: center;
+        .location-header {
+            font-size: 1.5em;
+            color: #d4af37;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #654321;
+            padding-bottom: 10px;
         }
 
         .choices {
@@ -244,107 +129,43 @@
         }
 
         .choice-btn {
-            font-family: 'Crimson Text', serif;
-            font-size: 1.1em;
-            padding: 15px 20px;
-            background: linear-gradient(180deg, var(--parchment) 0%, #e8dcc0 100%);
-            border: 3px solid var(--ink-dark);
-            border-radius: 4px;
+            background: linear-gradient(135deg, #654321 0%, #8b6914 100%);
+            color: #f4e4c1;
+            border: 2px solid #d4af37;
+            padding: 18px 25px;
+            font-size: 1.05em;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
             text-align: left;
-            box-shadow: 0 4px 8px var(--shadow);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .choice-btn::before {
-            content: '⚔';
-            position: absolute;
-            left: -30px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 1.5em;
-            transition: left 0.3s ease;
+            font-family: 'Georgia', serif;
         }
 
         .choice-btn:hover {
-            background: linear-gradient(180deg, #fff 0%, var(--parchment) 100%);
+            background: linear-gradient(135deg, #8b6914 0%, #a67c1b 100%);
+            border-color: #f4e4c1;
             transform: translateX(5px);
-            box-shadow: 0 6px 16px var(--shadow);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
         }
 
-        .choice-btn:hover::before {
-            left: 15px;
+        .choice-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
         }
 
-        .choice-btn:active {
-            transform: translateX(2px) translateY(2px);
-            box-shadow: 0 2px 4px var(--shadow);
-        }
-
-        .event-log {
-            margin-top: 20px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.5);
-            border: 2px solid var(--ink-medium);
-            border-radius: 4px;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        .event-log-title {
-            font-family: 'Cinzel', serif;
-            font-weight: 700;
-            font-size: 1.2em;
-            margin-bottom: 15px;
-            color: var(--blood-red);
-            border-bottom: 2px solid var(--gold);
-            padding-bottom: 8px;
-        }
-
-        .event-entry {
-            padding: 12px;
-            margin: 10px 0;
-            background: rgba(255, 255, 255, 0.7);
-            border-left: 4px solid var(--plague-green);
-            border-radius: 2px;
-            font-size: 1em;
-            line-height: 1.6;
-            animation: slideIn 0.5s ease;
-        }
-
-        .event-entry.bad {
-            border-left-color: var(--blood-red);
-        }
-
-        .event-entry.good {
-            border-left-color: var(--gold);
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        .game-over {
+        .outcome-modal {
             position: fixed;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.9);
-            display: none;
-            justify-content: center;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
             align-items: center;
+            justify-content: center;
             z-index: 1000;
-            animation: fadeIn 0.5s ease;
+            animation: fadeIn 0.3s ease;
         }
 
         @keyframes fadeIn {
@@ -352,15 +173,21 @@
             to { opacity: 1; }
         }
 
-        @keyframes fadeOut {
-            from { opacity: 1; }
-            to { opacity: 0; }
+        .outcome-content {
+            background: rgba(40, 25, 10, 0.95);
+            border: 3px solid #d4af37;
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
+            animation: slideIn 0.4s ease;
         }
 
-        @keyframes slideDown {
+        @keyframes slideIn {
             from {
                 opacity: 0;
-                transform: translateY(-30px);
+                transform: translateY(-50px);
             }
             to {
                 opacity: 1;
@@ -368,682 +195,1772 @@
             }
         }
 
-        .scenario-section.fade-out {
-            animation: fadeOut 0.4s ease forwards;
-        }
-
-        .scenario-section.fade-in {
-            animation: slideDown 0.6s ease forwards;
-        }
-
-        .choice-btn.selected {
-            background: linear-gradient(180deg, var(--gold) 0%, #b8941f 100%);
-            border-color: var(--blood-red);
-            transform: scale(0.98);
-            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
-            pointer-events: none;
-        }
-
-        .choice-btn.disabled {
-            opacity: 0.5;
-            pointer-events: none;
-        }
-
-        .time-passing {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(43, 24, 16, 0.95);
-            color: var(--parchment);
-            padding: 40px 60px;
-            border: 4px solid var(--gold);
-            border-radius: 8px;
-            font-family: 'Cinzel', serif;
-            font-size: 2em;
-            font-weight: 700;
-            z-index: 500;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
-            animation: fadeIn 0.3s ease, fadeOut 0.3s ease 1.2s forwards;
-            pointer-events: none;
-        }
-
-        .time-passing::before {
-            content: '⏳';
-            display: block;
-            font-size: 1.5em;
-            text-align: center;
-            margin-bottom: 10px;
-            animation: rotate 1.5s linear infinite;
-        }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(180deg); }
-        }
-
-        .game-over-content {
-            background: var(--parchment);
-            padding: 50px;
-            border: 8px solid var(--ink-dark);
-            border-radius: 4px;
-            text-align: center;
-            max-width: 600px;
-            box-shadow: 
-                0 0 0 2px var(--gold),
-                0 20px 60px rgba(0, 0, 0, 0.8);
-        }
-
-        .game-over-title {
-            font-family: 'MedievalSharp', cursive;
-            font-size: 3em;
-            color: var(--blood-red);
+        .outcome-header {
+            font-size: 1.8em;
+            color: #d4af37;
             margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 2px solid #654321;
+            padding-bottom: 10px;
         }
 
-        .game-over-text {
-            font-size: 1.3em;
+        .outcome-text {
+            font-size: 1.1em;
             line-height: 1.8;
-            margin-bottom: 30px;
-            color: var(--ink-dark);
+            margin-bottom: 25px;
+            color: #f4e4c1;
+        }
+
+        .dice-result {
+            font-size: 2.5em;
+            color: #d4af37;
+            margin: 20px 0;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+
+        .continue-btn {
+            background: linear-gradient(135deg, #1a4d1a 0%, #2d7a2d 100%);
+            color: white;
+            border: 2px solid #4a9d4a;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-family: 'Georgia', serif;
+            font-weight: bold;
+        }
+
+        .continue-btn:hover {
+            background: linear-gradient(135deg, #2d7a2d 0%, #3d9a3d 100%);
+        }
+
+        .dice-rolling-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 150px;
+            margin: 20px 0;
+        }
+
+        .dice-spinner {
+            font-size: 5em;
+            animation: spin 0.5s linear infinite;
+            filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.6));
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(90deg) scale(1.2); }
+            50% { transform: rotate(180deg) scale(1); }
+            75% { transform: rotate(270deg) scale(1.2); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 30px;
+            background: rgba(30, 20, 10, 0.8);
+            border: 2px solid #8b6914;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #d4af37 0%, #f4e4c1 50%, #d4af37 100%);
+            border-radius: 15px;
+            transition: width 0.05s linear;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.8);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.3),
+                transparent
+            );
+            animation: shimmer 1s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .game-over {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .game-over h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #d4af37;
         }
 
         .restart-btn {
-            font-family: 'Cinzel', serif;
-            font-size: 1.3em;
+            background: linear-gradient(135deg, #1a4d1a 0%, #2d7a2d 100%);
+            color: white;
+            border: 2px solid #4a9d4a;
             padding: 15px 40px;
-            background: linear-gradient(180deg, var(--gold) 0%, #b8941f 100%);
-            border: 3px solid var(--ink-dark);
-            border-radius: 4px;
+            font-size: 1.2em;
+            border-radius: 8px;
             cursor: pointer;
-            color: var(--ink-dark);
-            font-weight: 700;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            margin-top: 20px;
+            font-family: 'Georgia', serif;
         }
 
         .restart-btn:hover {
-            background: linear-gradient(180deg, #e6c752 0%, var(--gold) 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+            background: linear-gradient(135deg, #2d7a2d 0%, #3d9a3d 100%);
         }
 
-        .week-counter {
-            font-family: 'Cinzel', serif;
+        .knowledge-box {
+            background: rgba(20, 40, 60, 0.7);
+            border: 2px solid #4a7ba7;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #6a9bcf;
+        }
+
+        .knowledge-box h3 {
+            color: #6a9bcf;
+            margin-bottom: 10px;
+        }
+
+        .inventory {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .item {
+            background: rgba(80, 60, 40, 0.8);
+            padding: 8px 15px;
+            border-radius: 5px;
+            border: 1px solid #8b6914;
+            font-size: 0.95em;
+        }
+
+        .clickable-item {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .clickable-item:hover {
+            background: rgba(212, 175, 55, 0.5);
+            border-color: #d4af37;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(212, 175, 55, 0.4);
+        }
+
+        .clickable-item:active {
+            transform: translateY(0px);
+        }
+
+        /* Character Creation Styles */
+        .character-creation {
+            background: rgba(50, 35, 20, 0.8);
+            border: 2px solid #8b6914;
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .creation-section {
+            margin-bottom: 25px;
+        }
+
+        .creation-section h3 {
+            color: #d4af37;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .name-input {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.1em;
+            border: 2px solid #8b6914;
+            border-radius: 5px;
+            background: rgba(30, 20, 10, 0.8);
+            color: #f4e4c1;
+            font-family: 'Georgia', serif;
+        }
+
+        .name-input:focus {
+            outline: none;
+            border-color: #d4af37;
+        }
+
+        .stat-allocation {
+            display: grid;
+            gap: 20px;
+        }
+
+        .stat-control {
+            background: rgba(40, 25, 10, 0.8);
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #654321;
+        }
+
+        .stat-control-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .stat-name {
+            font-weight: bold;
+            color: #d4af37;
+            font-size: 1.1em;
+        }
+
+        .stat-buttons {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .stat-btn {
+            background: linear-gradient(135deg, #654321 0%, #8b6914 100%);
+            color: #f4e4c1;
+            border: 2px solid #d4af37;
+            width: 40px;
+            height: 40px;
+            font-size: 1.3em;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .stat-btn:hover:not(:disabled) {
+            background: linear-gradient(135deg, #8b6914 0%, #a67c1b 100%);
+            transform: scale(1.1);
+        }
+
+        .stat-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .stat-current {
             font-size: 1.5em;
+            font-weight: bold;
+            color: #d4af37;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .stat-description {
+            color: #c9a961;
+            font-size: 0.95em;
+            line-height: 1.5;
+            margin-top: 5px;
+        }
+
+        .points-remaining {
+            background: rgba(100, 50, 20, 0.8);
+            border: 2px solid #d4af37;
+            border-radius: 8px;
+            padding: 20px;
             text-align: center;
             margin-bottom: 20px;
-            color: var(--blood-red);
-            font-weight: 700;
-            padding: 15px;
-            background: rgba(139, 26, 26, 0.1);
-            border: 2px solid var(--blood-red);
-            border-radius: 4px;
         }
 
-        @media (max-width: 968px) {
-            .main-content {
-                grid-template-columns: 1fr;
-            }
+        .points-remaining-number {
+            font-size: 3em;
+            color: #d4af37;
+            font-weight: bold;
+        }
 
+        .start-btn {
+            background: linear-gradient(135deg, #1a4d1a 0%, #2d7a2d 100%);
+            color: white;
+            border: 2px solid #4a9d4a;
+            padding: 18px 40px;
+            font-size: 1.3em;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-family: 'Georgia', serif;
+            font-weight: bold;
+        }
+
+        .start-btn:hover:not(:disabled) {
+            background: linear-gradient(135deg, #2d7a2d 0%, #3d9a3d 100%);
+        }
+
+        .start-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+            
             h1 {
                 font-size: 1.8em;
+            }
+            
+            .stat-row {
+                flex-direction: column;
             }
         }
     </style>
 </head>
 <body>
-    <div class="game-container">
-        <div class="parchment-texture"></div>
+    <div class="container">
+        <h1>⚔️ Plague Survivor ⚔️</h1>
+        <p class="subtitle">A Medieval Adventure Through the Black Death</p>
         
-        <header>
-            <h1>⚔ The Black Death ⚔</h1>
-            <p class="subtitle">A Medieval Town Survival Simulation • Year 1348</p>
-        </header>
+        <div id="characterSheet" class="character-sheet" style="display: none;">
+            <!-- Character sheet will be populated -->
+        </div>
 
-        <div class="main-content">
-            <div class="scenario-section">
-                <div class="week-counter">Week <span id="weekNum">1</span> • <span id="scenarioName">Merchant Port City</span></div>
-                
-                <h2 class="scenario-title" id="eventTitle">A Mysterious Illness Arrives</h2>
-                <p class="scenario-description" id="eventDescription">
-                    Your thriving port city has welcomed merchant ships from distant lands. Within days, sailors begin falling ill with fever and strange swellings. Some whisper of a pestilence spreading across Europe. As town leader, you must decide how to respond.
-                </p>
+        <div id="storyContent" class="story-box">
+            <!-- Story content will be inserted here -->
+        </div>
 
-                <div class="decision-box" id="decisionBox">
-                    <p class="decision-text" id="decisionPrompt">What is your first action?</p>
-                    <div class="choices" id="choicesContainer">
-                        <!-- Choices will be inserted here -->
-                    </div>
-                </div>
-
-                <div class="event-log">
-                    <h3 class="event-log-title">Chronicle of Events</h3>
-                    <div id="logEntries">
-                        <div class="event-entry">Your journey begins. May God protect your town from the pestilence.</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="stats-panel">
-                <h3 class="stat-title">Town Status</h3>
-                
-                <div class="stat-item">
-                    <div class="stat-label">Healthy Population</div>
-                    <div class="stat-bar">
-                        <div class="stat-fill healthy" id="healthyBar" style="width: 100%"></div>
-                    </div>
-                    <div class="stat-number"><span id="healthyNum">1000</span> / 1000</div>
-                </div>
-
-                <div class="stat-item">
-                    <div class="stat-label">Infected & Sick</div>
-                    <div class="stat-bar">
-                        <div class="stat-fill" id="infectedBar" style="width: 0%"></div>
-                    </div>
-                    <div class="stat-number"><span id="infectedNum">0</span></div>
-                </div>
-
-                <div class="stat-item">
-                    <div class="stat-label">Economic Strength</div>
-                    <div class="stat-bar">
-                        <div class="stat-fill warning" id="economyBar" style="width: 100%"></div>
-                    </div>
-                    <div class="stat-number"><span id="economyNum">100</span>%</div>
-                </div>
-
-                <div class="stat-item">
-                    <div class="stat-label">Public Trust</div>
-                    <div class="stat-bar">
-                        <div class="stat-fill healthy" id="trustBar" style="width: 100%"></div>
-                    </div>
-                    <div class="stat-number"><span id="trustNum">100</span>%</div>
-                </div>
-            </div>
+        <div id="choicesContainer" class="choices">
+            <!-- Choices will be inserted here -->
         </div>
     </div>
 
-    <div class="game-over" id="gameOverScreen">
-        <div class="game-over-content">
-            <h2 class="game-over-title" id="gameOverTitle">The Chronicle Ends</h2>
-            <p class="game-over-text" id="gameOverMessage"></p>
-            <button class="restart-btn" onclick="restartGame()">Begin a New Chronicle</button>
-        </div>
+    <!-- Outcome Modal -->
+    <div id="outcomeModal" style="display: none;">
+        <!-- Modal content will be inserted here -->
     </div>
 
     <script>
         // Game State
         let gameState = {
-            week: 1,
-            healthy: 1000,
-            infected: 0,
-            dead: 0,
-            economy: 100,
-            trust: 100,
-            quarantineActive: false,
-            portClosed: false,
-            isolationActive: false,
-            phlebotomyUsed: false,
-            prayerUsed: false,
-            baseInfectionRate: 0.05,
-            scenarioType: 'port'
+            characterName: '',
+            health: 100,
+            maxHealth: 100,
+            gold: 50,
+            townsVisited: 0,
+            inventory: ['Travel Cloak', 'Water Flask'],
+            wisdom: 0,
+            strength: 0,
+            luck: 0,
+            charisma: 0,
+            hasVinegar: false,
+            hasHerbs: false,
+            hasMask: false,
+            hasInfo: false,
+            avoidedSickPeople: false,
+            cleanedHands: false,
+            stayedClean: false,
+            helpedOthers: 0,
+            currentLocation: 0,
+            gameStarted: false
         };
 
-        // Scenario events with medieval medical misconceptions
-        const scenarios = [
+        // Character creation
+        let creationState = {
+            pointsRemaining: 10,
+            stats: {
+                wisdom: 0,
+                strength: 0,
+                luck: 0,
+                charisma: 0
+            }
+        };
+
+        // Story locations - SHORTENED TEXT, MORE NPC INTERACTIONS, HARDER CONSEQUENCES
+        const storyPath = [
             {
-                week: 1,
-                title: "A Mysterious Illness Arrives",
-                description: "Your thriving port city has welcomed merchant ships from distant lands. Within days, sailors begin falling ill with fever and strange swellings. Some whisper of a pestilence spreading across Europe. As town leader, you must decide how to respond.",
-                image: "tournai_burial.jpg",
-                imageCaption: "Citizens of Tournai bury plague victims, 14th century manuscript",
+                name: "The Journey Begins - Your Village (1347)",
+                text: "You live in a small Italian village. News arrives: a terrible plague is spreading from the East, killing people within days. Dark swellings appear on victims' bodies. Your village elder warns it may reach here soon.",
+                knowledge: "The Black Death arrived in Europe in 1347 on trading ships from Asia. The disease was caused by bacteria carried by fleas on rats. Medieval people did not know about germs.",
                 choices: [
                     {
-                        text: "Close the port immediately to prevent more infected from arriving",
-                        effect: () => {
-                            gameState.portClosed = true;
-                            gameState.economy -= 20;
-                            gameState.baseInfectionRate -= 0.02;
-                            addLog("The port is sealed. Merchants protest, but no new ships may dock.", "good");
-                        }
+                        text: "🧠 Travel to find safety (Wisdom check)",
+                        diceRoll: true,
+                        difficulty: 10,
+                        success: () => {
+                            gameState.gold += 10;
+                            return "You prepared well and found supplies on the road!";
+                        },
+                        failure: () => {
+                            gameState.health -= 20;
+                            gameState.gold -= 10;
+                            return "The journey was rough. You got lost, lost supplies, and exhausted yourself.";
+                        },
+                        nextLocation: 1
                     },
                     {
-                        text: "Allow trade to continue—the economy depends on it",
-                        effect: () => {
-                            gameState.baseInfectionRate += 0.03;
-                            addLog("Trade flows freely. The merchants are pleased, but more sick travelers arrive.", "bad");
-                        }
+                        text: "🍀 Stay and hope the plague doesn't come (Risky gamble)",
+                        diceRoll: true,
+                        difficulty: 18,
+                        success: () => {
+                            gameState.gold += 20;
+                            return "Incredibly lucky! The plague never reached your village. You had time to prepare and leave with extra supplies!";
+                        },
+                        failure: () => {
+                            gameState.health -= 50;
+                            return "TERRIBLE LUCK! The plague reached your village within weeks! Rats infested your home and their fleas bit you repeatedly. You got very sick.";
+                        },
+                        nextLocation: 1
                     },
                     {
-                        text: "Quarantine the sick sailors away from the town",
-                        effect: () => {
-                            gameState.quarantineActive = true;
-                            gameState.baseInfectionRate -= 0.015;
-                            gameState.trust -= 5;
-                            addLog("The sick are moved to isolation. Some families protest being separated.", "good");
-                        }
+                        text: "🍀 Buy extra supplies before leaving (Risky gamble - Costs 15 gold)",
+                        goldCost: 15,
+                        diceRoll: true,
+                        difficulty: 12,
+                        success: () => {
+                            gameState.inventory.push('Medicine Pouch');
+                            gameState.health += 5;
+                            return "Lucky! You found a trustworthy merchant and got quality supplies.";
+                        },
+                        failure: () => {
+                            gameState.health -= 10;
+                            return "While shopping, you walked through rat-infested market stalls. Fleas bit you multiple times.";
+                        },
+                        nextLocation: 1
                     }
                 ]
             },
             {
-                week: 3,
-                title: "The Physician's Counsel",
-                description: "Your town physician examines the afflicted. He believes the sickness comes from corrupted air—'miasma' caused by decaying matter and foul odors. He recommends burning aromatic herbs and avoiding night air. Others suggest bloodletting to balance the humors.",
-                image: "plague_doctor.png",
-                imageCaption: "A plague doctor in protective costume, engraving by Paul Fürst, 1656",
+                name: "Genoa - The Port City",
+                text: "Genoa is crowded with sick merchants and sailors. A doctor in a bird-mask walks by. Rats run through dirty streets.",
+                knowledge: "Medieval cities attracted rats with garbage in streets. Rats carried fleas that spread plague bacteria. Doctors wore bird-beak masks filled with herbs because they thought bad smells caused disease.",
                 choices: [
                     {
-                        text: "Follow the physician's advice about miasma—burn herbs and seal windows",
-                        effect: () => {
-                            gameState.economy -= 5;
-                            addLog("Sweet-smelling smoke fills the streets. The miasma theory offers comfort but little protection.", "bad");
-                            gameState.infected += Math.floor(gameState.healthy * 0.04);
-                        }
+                        text: "🧠 Avoid crowds, find food on outskirts (Wisdom check)",
+                        diceRoll: true,
+                        difficulty: 12,
+                        success: () => {
+                            gameState.avoidedSickPeople = true;
+                            return "Smart! You stayed away from dangerous areas and found clean food.";
+                        },
+                        failure: () => {
+                            gameState.health -= 25;
+                            return "You got lost in a crowded, sick area full of rats and fleas. You were bitten multiple times by fleas.";
+                        },
+                        nextLocation: 2
                     },
                     {
-                        text: "Order bloodletting treatments for those with fever",
-                        effect: () => {
-                            gameState.phlebotomyUsed = true;
-                            gameState.infected += Math.floor(gameState.healthy * 0.03);
-                            const deaths = Math.floor(gameState.infected * 0.3);
-                            gameState.dead += deaths;
-                            gameState.infected -= deaths;
-                            addLog("Barber-surgeons drain blood from the feverish. Many grow weaker and die faster.", "bad");
-                        }
+                        text: "🍀 Buy herb mask from merchant (Risky gamble - Costs 20 gold)",
+                        goldCost: 20,
+                        diceRoll: true,
+                        difficulty: 14,
+                        success: () => {
+                            gameState.hasMask = true;
+                            gameState.inventory.push('Herb Mask');
+                            return "Good quality mask! Medieval people thought herbs protected against 'bad air.'";
+                        },
+                        failure: () => {
+                            gameState.health -= 20;
+                            return "The merchant sold you a fake mask. You wore it confidently and walked through rat-infested areas. Fleas bit you!";
+                        },
+                        nextLocation: 2
                     },
                     {
-                        text: "Ignore the physician and isolate the sick from the healthy",
-                        effect: () => {
-                            gameState.isolationActive = true;
-                            gameState.baseInfectionRate -= 0.02;
-                            gameState.trust -= 10;
-                            addLog("Despite objections, you enforce separation. Some call you cruel, but spread slows.", "good");
-                        }
+                        text: "🧠 Observe Merchant Antonio to judge if he's trustworthy (Wisdom check)",
+                        diceRoll: true,
+                        difficulty: 13,
+                        success: () => {
+                            gameState.hasInfo = true;
+                            gameState.inventory.push('Travel Map');
+                            return "You correctly read Antonio's body language! He gives you honest advice: 'Avoid Venice—plague is terrible there. Head for countryside!'";
+                        },
+                        failure: () => {
+                            gameState.gold -= 15;
+                            gameState.health -= 15;
+                            return "You misjudged Antonio! He gave you FALSE directions that led through rat-infested alleys where fleas bit you, and he picked your pocket!";
+                        },
+                        nextLocation: 2
+                    },
+                    {
+                        text: "💪 Work loading ships at the docks (Strength check)",
+                        diceRoll: true,
+                        difficulty: 13,
+                        success: () => {
+                            const totalGold = 25 + (gameState.strength * 5);
+                            gameState.gold += totalGold;
+                            return gameState.strength > 0 ?
+                                `Your strength impresses the dock master! You earned ${totalGold} gold. (+${gameState.strength * 5} strength bonus)` :
+                                `Hard work but you earned ${totalGold} gold safely.`;
+                        },
+                        failure: () => {
+                            const healthLoss = Math.max(20, 35 - gameState.strength * 3);
+                            gameState.health -= healthLoss;
+                            return `The cargo came from plague ships! Rats ran everywhere and fleas bit you while working. (Lost ${healthLoss} health)`;
+                        },
+                        nextLocation: 2
+                    },
+                    {
+                        text: "🍀 Sleep in cheap inn near docks (Risky gamble - Costs 10 gold)",
+                        goldCost: 10,
+                        diceRoll: true,
+                        difficulty: 17,
+                        success: () => {
+                            gameState.health += 5;
+                            return "You avoided sick guests. You feel rested.";
+                        },
+                        failure: () => {
+                            gameState.health -= 30;
+                            return "DISASTER! The inn was packed with dying sailors. You slept in a room where someone died of plague last night. The bedding was full of fleas that bit you all night!";
+                        },
+                        nextLocation: 2
+                    },
+                    {
+                        text: "🛒 Visit the merchant's stall",
+                        special: 'shop'
                     }
                 ]
             },
             {
-                week: 5,
-                title: "The Marketplace Dilemma",
-                description: "The bustling marketplace is the heart of your town's economy, but crowds gather daily for trade. You notice the illness spreads fastest where people congregate. Closing it would cripple commerce but might save lives.",
-                image: "triumph_of_death.jpg",
-                imageCaption: "The Triumph of Death by Pieter Bruegel the Elder, 1562",
+                name: "Countryside Village",
+                text: "A small farming village. Families have fled. Sick people lie in streets with fever. The priest preaches that prayer will protect them. A farmer claims isolation keeps his family safe.",
+                knowledge: "About one-third of all Europeans died from the Black Death (1347-1353)—about 25 million people! People didn't understand that fleas and rats spread the disease.",
                 choices: [
                     {
-                        text: "Close the marketplace and ban large gatherings",
-                        effect: () => {
-                            gameState.economy -= 30;
-                            gameState.baseInfectionRate -= 0.025;
-                            gameState.trust -= 15;
-                            addLog("The marketplace stands empty. Merchants rage, but fewer people fall sick.", "good");
-                        }
+                        text: "🍀 Buy vinegar to wash hands (Risky gamble - Costs 15 gold)",
+                        goldCost: 15,
+                        diceRoll: true,
+                        difficulty: 11,
+                        success: () => {
+                            gameState.hasVinegar = true;
+                            gameState.cleanedHands = true;
+                            gameState.inventory.push('Vinegar');
+                            return "Good choice! Vinegar kills some germs. Medieval people noticed staying clean helped.";
+                        },
+                        failure: () => {
+                            gameState.health -= 10;
+                            return "You bought vinegar but it was mostly water. Doesn't help much.";
+                        },
+                        nextLocation: 3
                     },
                     {
-                        text: "Keep markets open but require people to maintain distance",
-                        effect: () => {
-                            gameState.economy -= 10;
-                            gameState.baseInfectionRate -= 0.01;
-                            addLog("You attempt to enforce spacing. Some comply, but crowds still form.", "good");
-                        }
+                        text: "🍀 Help sick villagers (Very risky - Health check)",
+                        diceRoll: true,
+                        difficulty: 18,
+                        success: () => {
+                            gameState.helpedOthers++;
+                            const totalGold = 15 + (gameState.charisma * 3);
+                            gameState.gold += totalGold;
+                            return gameState.charisma > 0 ?
+                                `You helped from a distance with great care. Grateful villagers gave you ${totalGold} gold! (+${gameState.charisma * 3} charisma)` :
+                                `You helped very carefully from a distance. Villagers gave you ${totalGold} gold.`;
+                        },
+                        failure: () => {
+                            const healthLoss = Math.max(30, 45 - gameState.strength * 3);
+                            gameState.health -= healthLoss;
+                            return `DANGEROUS! You got too close to dying plague victims. Their belongings were infested with fleas that bit you repeatedly. You feel very feverish. (Lost ${healthLoss} health)`;
+                        },
+                        nextLocation: 3
                     },
                     {
-                        text: "Business as usual—the economy cannot afford disruption",
-                        effect: () => {
-                            gameState.baseInfectionRate += 0.03;
-                            addLog("Markets thrive with activity. The plague thrives too, spreading through the crowds.", "bad");
-                        }
+                        text: "🧠 Avoid village entirely (Wisdom check)",
+                        diceRoll: true,
+                        difficulty: 10,
+                        success: () => {
+                            return "Smart! You stayed far away. Isolation was one of the few things that worked.";
+                        },
+                        failure: () => {
+                            gameState.health -= 20;
+                            return "Sick people blocked the road and begged for help. You had to push through them. Fleas from their clothing jumped onto you and bit you.";
+                        },
+                        nextLocation: 3
+                    },
+                    {
+                        text: "💪 Intimidate Father Marco into giving you supplies (Strength check)",
+                        diceRoll: true,
+                        difficulty: 14,
+                        success: () => {
+                            gameState.gold += 20;
+                            gameState.hasInfo = true;
+                            return "Your physical presence intimidated Father Marco! He gave you money and told you which towns to avoid to get rid of you.";
+                        },
+                        failure: () => {
+                            gameState.gold -= 15;
+                            gameState.health -= 15;
+                            return "Father Marco called the villagers to defend him! They beat you and chased you through rat-filled streets. Fleas bit you while you escaped!";
+                        },
+                        nextLocation: 3
+                    },
+                    {
+                        text: "🛒 Visit traveling merchant's cart",
+                        special: 'shop'
                     }
                 ]
             },
             {
-                week: 7,
-                title: "Desperate Measures",
-                description: "A quarter of your population has fallen ill. The church says this pestilence is divine punishment for sin. The bishop urges mass prayer gatherings and processions to beg God's mercy. Others suggest fleeing the city entirely.",
-                image: "dance_of_death.png",
-                imageCaption: "The Dance of Death, woodcut by Michael Wolgemut, 1493",
+                name: "Florence - The Walled City",
+                text: "Florence has tall walls. Guards check everyone for sickness at the gate. Streets are cleaner—leaders ordered garbage removal. Still, sick people are taken to plague houses daily.",
+                knowledge: "Some cities tried quarantine—closing gates to sick people. The word comes from Italian meaning '40 days' because ships waited 40 days before entering. This slowed but didn't stop plague.",
                 choices: [
                     {
-                        text: "Organize prayer processions throughout the town",
-                        effect: () => {
-                            gameState.prayerUsed = true;
-                            gameState.trust += 15;
-                            gameState.baseInfectionRate += 0.04;
-                            addLog("Crowds gather in prayer, seeking divine intervention. The plague spreads faster in the masses.", "bad");
-                        }
+                        text: "Stay in clean inn (Costs 25 gold)",
+                        goldCost: 25,
+                        diceRoll: true,
+                        difficulty: 12,
+                        success: () => {
+                            gameState.stayedClean = true;
+                            gameState.health += 15;
+                            return "You rested safely. Avoiding rats and fleas was crucial. You feel refreshed!";
+                        },
+                        failure: () => {
+                            gameState.health -= 15;
+                            return "Even the 'clean' inn had rats everywhere. You woke up with flea bites all over your body.";
+                        },
+                        nextLocation: 4
                     },
                     {
-                        text: "Ban large gatherings, even religious ones",
-                        effect: () => {
-                            gameState.trust -= 25;
-                            gameState.baseInfectionRate -= 0.02;
-                            addLog("The bishop condemns you as faithless. The people are angry, but gatherings cease.", "good");
-                        }
+                        text: "Buy medical herbs (Costs 15 gold)",
+                        goldCost: 15,
+                        diceRoll: true,
+                        difficulty: 11,
+                        success: () => {
+                            gameState.hasHerbs = true;
+                            gameState.inventory.push('Medical Herbs');
+                            gameState.health += 10;
+                            return "Good quality herbs! They help with symptoms and you feel better.";
+                        },
+                        failure: () => {
+                            gameState.health -= 10;
+                            return "The 'herbs' were just weeds. They made you feel worse.";
+                        },
+                        nextLocation: 4
                     },
                     {
-                        text: "Allow those who wish to flee to leave the city",
-                        effect: () => {
-                            const fleeing = Math.floor(gameState.healthy * 0.3);
-                            gameState.healthy -= fleeing;
-                            gameState.economy -= 25;
-                            addLog(`${fleeing} citizens flee in terror, some carrying the plague to other regions.`, "bad");
-                        }
+                        text: "💪 Work for a day (Strength check)",
+                        diceRoll: true,
+                        difficulty: 15,
+                        success: () => {
+                            const totalGold = 35 + (gameState.strength * 5);
+                            gameState.gold += totalGold;
+                            return gameState.strength > 0 ? 
+                                `You earned ${totalGold} gold! (+${gameState.strength * 5} strength bonus)` :
+                                `You earned ${totalGold} gold working safely!`;
+                        },
+                        failure: () => {
+                            const healthLoss = Math.max(25, 40 - gameState.strength * 3);
+                            gameState.health -= healthLoss;
+                            return `The work was in a plague house clearing bodies! It was exhausting and extremely dangerous. You feel very weak. (Lost ${healthLoss} health)`;
+                        },
+                        nextLocation: 4
+                    },
+                    {
+                        text: "💖 Meet Guard Captain Rosa about safe passage (Charisma check)",
+                        diceRoll: true,
+                        difficulty: 16,
+                        success: () => {
+                            gameState.health += 15;
+                            gameState.hasInfo = true;
+                            return "Captain Rosa likes you! She shares which roads are safest and gives you access to clean water wells. Very valuable!";
+                        },
+                        failure: () => {
+                            gameState.gold -= 20;
+                            gameState.health -= 15;
+                            return "Captain Rosa is suspicious of travelers. She quarantines you in a room with sick people for two days. The room was full of rats and you were bitten by fleas!";
+                        },
+                        nextLocation: 4
+                    },
+                    {
+                        text: "🛒 Visit the merchant's shop",
+                        special: 'shop'
                     }
                 ]
             },
             {
-                week: 10,
-                title: "The Turning Point",
-                description: "Months have passed. Bodies pile faster than they can be buried. Your decisions have shaped your town's fate. Some medieval cities lost half their population to the Black Death, while others fared better. How will yours be remembered?",
-                image: "tournai_burial.jpg",
-                imageCaption: "Mass burial during the Black Death, 14th century",
+                name: "Monastery in the Hills",
+                text: "A monastery high in the hills. Monks have isolated themselves, trading through a gate window. Very clean—no rats, they burn herbs constantly.",
+                knowledge: "Many monasteries survived better than cities due to isolation and hygiene. Some that helped sick people lost many monks. Religious communities were divided on whether to isolate or help.",
                 choices: [
                     {
-                        text: "Enforce strict isolation of all sick individuals",
-                        effect: () => {
-                            gameState.baseInfectionRate -= 0.03;
-                            gameState.trust -= 10;
-                            addLog("Harsh isolation measures take effect. Families weep, but the tide begins to turn.", "good");
-                        }
+                        text: "💖 Ask monks for shelter (Charisma check)",
+                        diceRoll: true,
+                        difficulty: 17,
+                        success: () => {
+                            gameState.health += 25;
+                            gameState.stayedClean = true;
+                            return "The monks let you rest in their guest house for three days. You recover significantly!";
+                        },
+                        failure: () => {
+                            gameState.gold -= 15;
+                            gameState.health -= 10;
+                            return "The monks refuse entry angrily. They throw rocks and you had to flee through thorny bushes. You're injured.";
+                        },
+                        nextLocation: 5
                     },
                     {
-                        text: "Focus resources on caring for the sick with compassion",
-                        effect: () => {
-                            gameState.trust += 10;
-                            const saved = Math.floor(gameState.infected * 0.15);
-                            gameState.infected -= saved;
-                            gameState.healthy += saved;
-                            addLog("Caregivers risk their lives for others. Some patients recover through rest and care.", "good");
-                        }
+                        text: "Trade for blessed items (Costs 15 gold)",
+                        goldCost: 15,
+                        diceRoll: true,
+                        difficulty: 13,
+                        success: () => {
+                            gameState.inventory.push('Blessed Items');
+                            gameState.health += 10;
+                            return "While these don't stop plague, your confidence makes you more careful!";
+                        },
+                        failure: () => {
+                            gameState.health -= 10;
+                            return "The 'blessed' items were fake. Your false confidence led you to take risks.";
+                        },
+                        nextLocation: 5
                     },
                     {
-                        text: "Order disposal of rat-infested areas and improve sanitation",
-                        effect: () => {
-                            gameState.baseInfectionRate -= 0.025;
-                            gameState.economy -= 15;
-                            addLog("Though you don't know about disease vectors, cleaning reduces rat populations. The plague weakens.", "good");
-                        }
+                        text: "💪 Chop wood for the monks in exchange for shelter (Strength check)",
+                        diceRoll: true,
+                        difficulty: 12,
+                        success: () => {
+                            gameState.health += 20;
+                            gameState.stayedClean = true;
+                            const bonus = gameState.strength * 5;
+                            return gameState.strength > 0 ?
+                                `Your strength impressed the monks! They let you stay in their clean guest house. You recovered significantly! (+${bonus} extra health from strength)` :
+                                `Hard work but the monks let you rest. You recovered significantly!`;
+                        },
+                        failure: () => {
+                            const healthLoss = Math.max(15, 25 - gameState.strength * 2);
+                            gameState.health -= healthLoss;
+                            return `The work exhausted you and you had to sleep outside near the stables where rats nested. Fleas bit you. (Lost ${healthLoss} health)`;
+                        },
+                        nextLocation: 5
+                    },
+                    {
+                        text: "🧠 Learn survival methods from monks (Wisdom check)",
+                        diceRoll: true,
+                        difficulty: 14,
+                        success: () => {
+                            gameState.cleanedHands = true;
+                            gameState.avoidedSickPeople = true;
+                            return "The monks teach you about cleanliness and isolation. Valuable survival techniques!";
+                        },
+                        failure: () => {
+                            gameState.health -= 15;
+                            return "You couldn't understand their Latin and got frustrated. You left angry and made poor decisions.";
+                        },
+                        nextLocation: 5
+                    },
+                    {
+                        text: "🍀 Speak with Brother Marco who tends the sick (Risky)",
+                        diceRoll: true,
+                        difficulty: 16,
+                        success: () => {
+                            gameState.helpedOthers++;
+                            gameState.hasInfo = true;
+                            return "Brother Marco shares from a distance: 'Those who wash constantly and avoid touching the sick live longer.' Valuable!";
+                        },
+                        failure: () => {
+                            gameState.health -= 30;
+                            return "Brother Marco is VERY sick with plague. You got too close - he had fleas on his robes that jumped onto you. You were bitten multiple times.";
+                        },
+                        nextLocation: 5
+                    },
+                    {
+                        text: "🛒 Trade with monastery merchant",
+                        special: 'shop'
+                    }
+                ]
+            },
+            {
+                name: "Final Journey - Heading North",
+                text: "You've survived this far! You head north to the Alps, where plague is less common. Fresh mountain air, fewer people. But you must cross through one last town...",
+                knowledge: "The Black Death changed Europe forever. So many died that workers became scarce, giving common people more power. It led to questioning old ideas and helped spark the Renaissance. Scientists later discovered plague was caused by bacteria spread by fleas, not bad air or punishment.",
+                choices: [
+                    {
+                        text: "🧠 Take main road through town (Wisdom check)",
+                        diceRoll: true,
+                        difficulty: calculateFinalDifficulty() - 1,
+                        success: () => {
+                            return "SUCCESS!";
+                        },
+                        failure: () => {
+                            gameState.health -= 50;
+                            if (gameState.health <= 0) return "FAILURE";
+                            return "PARTIAL";
+                        },
+                        nextLocation: 6
+                    },
+                    {
+                        text: "💪 Go around through forest (Strength check)",
+                        diceRoll: true,
+                        difficulty: calculateFinalDifficulty() + 1,
+                        success: () => {
+                            return "SUCCESS!";
+                        },
+                        failure: () => {
+                            gameState.health -= 35;
+                            if (gameState.health <= 0) return "FAILURE";
+                            return "PARTIAL";
+                        },
+                        nextLocation: 6
+                    },
+                    {
+                        text: "💖 Hire Guide Elena for safe paths (Charisma check - Costs 20 gold)",
+                        goldCost: 20,
+                        diceRoll: true,
+                        difficulty: 15,
+                        success: () => {
+                            return "Elena is honest! She shows you hidden paths that avoid all sick areas. You reach the mountains safely!\n\nSUCCESS!";
+                        },
+                        failure: () => {
+                            gameState.health -= 45;
+                            if (gameState.health <= 0) return "Elena was a fraud! She led you directly into rat-infested plague wards and stole your gold. Fleas bit you everywhere. You collapsed.\n\nFAILURE";
+                            return "Elena was a fraud! She led you through rat-infested areas where fleas bit you, and she stole your gold. You barely escaped.\n\nPARTIAL";
+                        },
+                        nextLocation: 6
+                    },
+                    {
+                        text: "🍀 Rest here to regain strength first (Risky gamble - Costs 20 gold)",
+                        goldCost: 20,
+                        diceRoll: true,
+                        difficulty: 11,
+                        success: () => {
+                            gameState.health += 20;
+                            return "You feel much better! Ready for the final journey.";
+                        },
+                        failure: () => {
+                            gameState.health -= 15;
+                            return "While resting, rats got into your supplies and you got bitten by fleas. You feel worse!";
+                        },
+                        nextLocation: 5
                     }
                 ]
             }
         ];
 
-        // Initialize game
-        function initGame() {
-            showScenario(0);
+        function calculateFinalDifficulty() {
+            let difficulty = 20; // Much harder base difficulty!
+            
+            // Bonuses for good choices
+            if (gameState.avoidedSickPeople) difficulty -= 2;
+            if (gameState.hasMask) difficulty -= 1;
+            if (gameState.hasVinegar) difficulty -= 2;
+            if (gameState.stayedClean) difficulty -= 2;
+            if (gameState.cleanedHands) difficulty -= 2;
+            if (gameState.hasInfo) difficulty -= 2;
+            if (gameState.hasHerbs) difficulty -= 1;
+            if (gameState.health > 90) difficulty -= 2;
+            if (gameState.health > 70) difficulty -= 1;
+            
+            return Math.max(difficulty, 12); // Minimum is much higher
         }
 
-        // Show scenario
-        function showScenario(index) {
-            if (index >= scenarios.length) {
-                endGame();
-                return;
-            }
-
-            const scenario = scenarios[index];
-            document.getElementById('eventTitle').textContent = scenario.title;
-            document.getElementById('eventDescription').textContent = scenario.description;
-            document.getElementById('decisionPrompt').textContent = "What will you do?";
-            
-            // Add or update scenario image
-            let imageContainer = document.getElementById('scenarioImageContainer');
-            if (!imageContainer) {
-                imageContainer = document.createElement('div');
-                imageContainer.id = 'scenarioImageContainer';
-                const titleElement = document.getElementById('eventTitle');
-                titleElement.parentNode.insertBefore(imageContainer, titleElement.nextSibling);
-            }
-            
-            if (scenario.image) {
-                imageContainer.innerHTML = `
-                    <img src="${scenario.image}" 
-                         alt="${scenario.imageCaption}" 
-                         class="scenario-image"
-                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-                         crossorigin="anonymous">
-                    <div style="display:none; width: 100%; max-width: 500px; height: 300px; margin: 0 auto 20px; background: linear-gradient(135deg, #4a2c1f 0%, #2b1810 100%); border: 4px solid #2b1810; border-radius: 4px; align-items: center; justify-content: center; color: #f4e8d0; font-family: 'Cinzel', serif; font-size: 1.2em; text-align: center; padding: 20px; box-shadow: 0 4px 12px rgba(43, 24, 16, 0.2);">
-                        📜 ${scenario.imageCaption} 📜
+        function showCharacterCreation() {
+            const creationHTML = `
+                <div class="character-creation">
+                    <h2 style="text-align: center; color: #d4af37; margin-bottom: 20px;">Create Your Character</h2>
+                    
+                    <div class="creation-section">
+                        <h3>What is your name, traveler?</h3>
+                        <input type="text" id="characterNameInput" class="name-input" placeholder="Enter your character's name..." maxlength="30">
                     </div>
-                    <p class="image-caption">${scenario.imageCaption}</p>
-                `;
-            } else {
-                imageContainer.innerHTML = '';
+
+                    <div class="creation-section">
+                        <h3>Distribute Your Ability Points</h3>
+                        <div class="points-remaining">
+                            <div style="font-size: 1.1em; color: #c9a961; margin-bottom: 10px;">Points Remaining</div>
+                            <div class="points-remaining-number" id="pointsRemaining">10</div>
+                        </div>
+                        
+                        <div class="stat-allocation">
+                            <div class="stat-control">
+                                <div class="stat-control-header">
+                                    <span class="stat-name">🧠 Wisdom</span>
+                                    <div class="stat-buttons">
+                                        <button class="stat-btn" onclick="decreaseStat('wisdom')">−</button>
+                                        <span class="stat-current" id="wisdom-value">0</span>
+                                        <button class="stat-btn" onclick="increaseStat('wisdom')">+</button>
+                                    </div>
+                                </div>
+                                <div class="stat-description">
+                                    Better choices when avoiding danger. Helps you pass wisdom checks to stay safe.
+                                </div>
+                            </div>
+
+                            <div class="stat-control">
+                                <div class="stat-control-header">
+                                    <span class="stat-name">💪 Strength</span>
+                                    <div class="stat-buttons">
+                                        <button class="stat-btn" onclick="decreaseStat('strength')">−</button>
+                                        <span class="stat-current" id="strength-value">0</span>
+                                        <button class="stat-btn" onclick="increaseStat('strength')">+</button>
+                                    </div>
+                                </div>
+                                <div class="stat-description">
+                                    Strong body fights sickness better. More starting health and helps you recover.
+                                </div>
+                            </div>
+
+                            <div class="stat-control">
+                                <div class="stat-control-header">
+                                    <span class="stat-name">🍀 Luck</span>
+                                    <div class="stat-buttons">
+                                        <button class="stat-btn" onclick="decreaseStat('luck')">−</button>
+                                        <span class="stat-current" id="luck-value">0</span>
+                                        <button class="stat-btn" onclick="increaseStat('luck')">+</button>
+                                    </div>
+                                </div>
+                                <div class="stat-description">
+                                    Good fortune! Improves risky dice rolls throughout the journey.
+                                </div>
+                            </div>
+
+                            <div class="stat-control">
+                                <div class="stat-control-header">
+                                    <span class="stat-name">💖 Charisma</span>
+                                    <div class="stat-buttons">
+                                        <button class="stat-btn" onclick="decreaseStat('charisma')">−</button>
+                                        <span class="stat-current" id="charisma-value">0</span>
+                                        <button class="stat-btn" onclick="increaseStat('charisma')">+</button>
+                                    </div>
+                                </div>
+                                <div class="stat-description">
+                                    Friendly people get better deals and help from others. Earn more gold.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="start-btn" id="startGameBtn" onclick="startGame()" disabled>
+                        ⚔️ Begin Your Journey ⚔️
+                    </button>
+                </div>
+            `;
+
+            document.getElementById('storyContent').innerHTML = creationHTML;
+            document.getElementById('choicesContainer').innerHTML = '';
+            document.getElementById('characterNameInput').addEventListener('input', updateStartButton);
+            updateStatButtons();
+        }
+
+        function increaseStat(statName) {
+            if (creationState.pointsRemaining > 0 && creationState.stats[statName] < 5) {
+                creationState.stats[statName]++;
+                creationState.pointsRemaining--;
+                updateStatDisplay(statName);
+                updateStatButtons();
+                updateStartButton();
             }
-            
-            const choicesContainer = document.getElementById('choicesContainer');
-            choicesContainer.innerHTML = '';
-            
-            scenario.choices.forEach((choice, i) => {
-                const btn = document.createElement('button');
-                btn.className = 'choice-btn';
-                btn.textContent = choice.text;
-                btn.onclick = () => makeChoice(choice, index);
-                choicesContainer.appendChild(btn);
+        }
+
+        function decreaseStat(statName) {
+            if (creationState.stats[statName] > 0) {
+                creationState.stats[statName]--;
+                creationState.pointsRemaining++;
+                updateStatDisplay(statName);
+                updateStatButtons();
+                updateStartButton();
+            }
+        }
+
+        function updateStatDisplay(statName) {
+            document.getElementById(`${statName}-value`).textContent = creationState.stats[statName];
+            document.getElementById('pointsRemaining').textContent = creationState.pointsRemaining;
+        }
+
+        function updateStatButtons() {
+            const stats = ['wisdom', 'strength', 'luck', 'charisma'];
+            stats.forEach(stat => {
+                const increaseBtn = document.querySelector(`#${stat}-value`).parentElement.querySelector('button:last-child');
+                const decreaseBtn = document.querySelector(`#${stat}-value`).parentElement.querySelector('button:first-child');
+                
+                increaseBtn.disabled = creationState.pointsRemaining === 0 || creationState.stats[stat] >= 5;
+                decreaseBtn.disabled = creationState.stats[stat] === 0;
             });
         }
 
-        // Handle choice
-        function makeChoice(choice, scenarioIndex) {
-            // Highlight selected button and disable others
-            const allButtons = document.querySelectorAll('.choice-btn');
-            allButtons.forEach(btn => {
-                if (btn.textContent === choice.text) {
-                    btn.classList.add('selected');
+        function updateStartButton() {
+            const nameInput = document.getElementById('characterNameInput');
+            const startBtn = document.getElementById('startGameBtn');
+            const hasName = nameInput && nameInput.value.trim().length > 0;
+            const hasSpentPoints = creationState.pointsRemaining === 0;
+            
+            if (startBtn) {
+                startBtn.disabled = !hasName || !hasSpentPoints;
+                if (!hasName && !hasSpentPoints) {
+                    startBtn.textContent = '⚔️ Enter Name & Spend All Points ⚔️';
+                } else if (!hasName) {
+                    startBtn.textContent = '⚔️ Enter Your Name First ⚔️';
+                } else if (!hasSpentPoints) {
+                    startBtn.textContent = `⚔️ Spend ${creationState.pointsRemaining} More Points ⚔️`;
                 } else {
-                    btn.classList.add('disabled');
+                    startBtn.textContent = '⚔️ Begin Your Journey ⚔️';
                 }
-            });
-
-            // Apply choice effect
-            choice.effect();
-            
-            // Progress week
-            if (scenarioIndex < scenarios.length - 1) {
-                gameState.week = scenarios[scenarioIndex + 1].week;
-            } else {
-                gameState.week += 3;
-            }
-            
-            // Simulate disease spread
-            simulateWeeks();
-            
-            // Update stats with slight delay for visual feedback
-            setTimeout(() => {
-                updateStats();
-                document.getElementById('weekNum').textContent = gameState.week;
-            }, 300);
-            
-            // Check game over conditions
-            if (gameState.healthy <= 100 || gameState.economy <= 0 || gameState.trust <= 10) {
-                setTimeout(() => {
-                    endGame();
-                }, 1000);
-                return;
-            }
-            
-            // Show "time passing" overlay
-            const timePassing = document.createElement('div');
-            timePassing.className = 'time-passing';
-            timePassing.innerHTML = `Weeks Pass...`;
-            document.body.appendChild(timePassing);
-            
-            // Fade out current scenario
-            setTimeout(() => {
-                const scenarioSection = document.querySelector('.scenario-section');
-                scenarioSection.classList.add('fade-out');
-            }, 800);
-            
-            // Remove time passing overlay
-            setTimeout(() => {
-                timePassing.remove();
-            }, 1500);
-            
-            // Move to next scenario with fade in
-            setTimeout(() => {
-                const scenarioSection = document.querySelector('.scenario-section');
-                scenarioSection.classList.remove('fade-out');
-                scenarioSection.classList.add('fade-in');
-                
-                showScenario(scenarioIndex + 1);
-                
-                // Remove fade-in class after animation
-                setTimeout(() => {
-                    scenarioSection.classList.remove('fade-in');
-                }, 600);
-            }, 1600);
-        }
-
-        // Simulate disease progression
-        function simulateWeeks() {
-            // Calculate infection
-            let newInfections = Math.floor(gameState.healthy * gameState.baseInfectionRate);
-            
-            // Trust affects compliance - low trust means people ignore health measures
-            let trustMultiplier = 1.0;
-            if (gameState.trust < 30) {
-                trustMultiplier = 1.5; // Very low trust = people rebel, infection spreads faster
-            } else if (gameState.trust < 50) {
-                trustMultiplier = 1.2; // Low trust = partial compliance
-            } else if (gameState.trust > 80) {
-                trustMultiplier = 0.85; // High trust = better compliance with measures
-            }
-            
-            // Apply modifiers
-            if (gameState.quarantineActive) newInfections *= 0.7;
-            if (gameState.isolationActive) newInfections *= 0.6;
-            if (gameState.portClosed) newInfections *= 0.8;
-            
-            // Apply trust modifier
-            newInfections = Math.floor(newInfections * trustMultiplier);
-            
-            gameState.infected += newInfections;
-            gameState.healthy -= newInfections;
-            
-            // Calculate deaths (30-60% of infected die in medieval times)
-            const deaths = Math.floor(gameState.infected * (0.3 + Math.random() * 0.3));
-            gameState.dead += deaths;
-            gameState.infected -= deaths;
-            
-            // Some recover
-            const recovered = Math.floor(gameState.infected * 0.1);
-            gameState.infected -= recovered;
-            gameState.healthy += recovered;
-            
-            // Low trust warnings
-            if (gameState.trust < 30 && Math.random() > 0.5) {
-                addLog("Citizens openly defy your quarantine orders. The sick move freely through the streets.", "bad");
-            } else if (gameState.trust < 50 && Math.random() > 0.7) {
-                addLog("Grumbling in the streets. Some question your authority to impose restrictions.", "bad");
-            }
-            
-            // Ensure no negatives
-            gameState.healthy = Math.max(0, gameState.healthy);
-            gameState.infected = Math.max(0, gameState.infected);
-            gameState.economy = Math.max(0, gameState.economy);
-            gameState.trust = Math.max(0, gameState.trust);
-        }
-
-        // Update stats display
-        function updateStats() {
-            const totalPop = 1000;
-            
-            document.getElementById('healthyNum').textContent = gameState.healthy;
-            document.getElementById('infectedNum').textContent = gameState.infected;
-            document.getElementById('economyNum').textContent = Math.round(gameState.economy);
-            document.getElementById('trustNum').textContent = Math.round(gameState.trust);
-            
-            const healthyPercent = (gameState.healthy / totalPop) * 100;
-            const infectedPercent = (gameState.infected / totalPop) * 100;
-            
-            document.getElementById('healthyBar').style.width = healthyPercent + '%';
-            document.getElementById('infectedBar').style.width = infectedPercent + '%';
-            document.getElementById('economyBar').style.width = gameState.economy + '%';
-            document.getElementById('trustBar').style.width = gameState.trust + '%';
-            
-            // Color coding
-            const healthyBar = document.getElementById('healthyBar');
-            if (healthyPercent > 60) {
-                healthyBar.className = 'stat-fill healthy';
-            } else if (healthyPercent > 30) {
-                healthyBar.className = 'stat-fill warning';
-            } else {
-                healthyBar.className = 'stat-fill';
             }
         }
 
-        // Add log entry
-        function addLog(message, type = '') {
-            const logEntries = document.getElementById('logEntries');
-            const entry = document.createElement('div');
-            entry.className = 'event-entry ' + type;
-            entry.textContent = message;
-            logEntries.insertBefore(entry, logEntries.firstChild);
+        function startGame() {
+            const nameInput = document.getElementById('characterNameInput');
+            gameState.characterName = nameInput.value.trim();
             
-            // Limit log entries
-            while (logEntries.children.length > 10) {
-                logEntries.removeChild(logEntries.lastChild);
-            }
+            gameState.wisdom = creationState.stats.wisdom;
+            gameState.strength = creationState.stats.strength;
+            gameState.luck = creationState.stats.luck;
+            gameState.charisma = creationState.stats.charisma;
+            
+            gameState.maxHealth = 100 + (gameState.strength * 10);
+            gameState.health = gameState.maxHealth;
+            gameState.gold = 25 + (gameState.charisma * 5);
+            gameState.gameStarted = true;
+            
+            document.getElementById('characterSheet').style.display = 'block';
+            updateCharacterSheetWithStats();
+            showLocation(0);
         }
 
-        // End game
-        function endGame() {
-            const survivalRate = ((gameState.healthy / 1000) * 100).toFixed(1);
-            const deathRate = ((gameState.dead / 1000) * 100).toFixed(1);
+        function updateCharacterSheetWithStats() {
+            const statsHTML = `
+                <div style="text-align: center; margin-bottom: 15px;">
+                    <strong style="font-size: 1.3em; color: #d4af37;">${gameState.characterName}</strong>
+                </div>
+                <div class="stat-row">
+                    <div class="stat">
+                        <div class="stat-label">Health</div>
+                        <div class="stat-value" id="healthValue">${gameState.health}</div>
+                        <div class="health-bar">
+                            <div class="health-fill" id="healthBar" style="width: 100%">${gameState.health}/${gameState.maxHealth}</div>
+                        </div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Gold Coins</div>
+                        <div class="stat-value" id="goldValue">${gameState.gold}</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Towns Visited</div>
+                        <div class="stat-value" id="townsValue">${gameState.townsVisited}</div>
+                    </div>
+                </div>
+                <div class="stat-row" style="margin-top: 10px;">
+                    <div class="stat" style="min-width: 100px;">
+                        <div class="stat-label">Wisdom</div>
+                        <div class="stat-value">${gameState.wisdom}</div>
+                    </div>
+                    <div class="stat" style="min-width: 100px;">
+                        <div class="stat-label">Strength</div>
+                        <div class="stat-value">${gameState.strength}</div>
+                    </div>
+                    <div class="stat" style="min-width: 100px;">
+                        <div class="stat-label">Luck</div>
+                        <div class="stat-value">${gameState.luck}</div>
+                    </div>
+                    <div class="stat" style="min-width: 100px;">
+                        <div class="stat-label">Charisma</div>
+                        <div class="stat-value">${gameState.charisma}</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px;">
+                    <div class="stat-label">Inventory:</div>
+                    <div class="inventory" id="inventory">
+                        ${gameState.inventory.map(item => `<span class="item">${item}</span>`).join('')}
+                    </div>
+                </div>
+            `;
             
-            let message = '';
-            let title = '';
-            
-            if (gameState.trust <= 10) {
-                title = 'Rebellion and Chaos';
-                message = `After ${gameState.week} weeks, your authority has collapsed. With only ${Math.round(gameState.trust)}% public trust, citizens refuse to follow your health orders. They tear down quarantine barriers, hide their sick, and openly defy restrictions. The plague spreads unchecked. ${gameState.dead} have died. History shows that effective plague response required both wise policies AND public cooperation.`;
-            } else if (gameState.healthy <= 100) {
-                title = 'The Town Falls';
-                message = `After ${gameState.week} weeks, your town has been devastated. Only ${gameState.healthy} survivors remain of 1,000 citizens. ${gameState.dead} have perished. The historical Black Death killed 30-60% of Europe's population. Your decisions determined whether your town fared better or worse than history.`;
-            } else if (survivalRate >= 70) {
-                title = 'A Remarkable Survival';
-                message = `After ${gameState.week} weeks, ${gameState.healthy} of your 1,000 citizens survived (${survivalRate}% survival rate). Your decisions saved more lives than most medieval towns. By enforcing isolation and limiting gatherings—even without understanding germs—you prevented the worst. ${gameState.trust > 70 ? 'High public trust meant citizens followed your health measures willingly.' : 'Despite some resistance, your policies worked.'} Many historical cities lost half their population.`;
-            } else if (survivalRate >= 50) {
-                title = 'A Costly Victory';
-                message = `After ${gameState.week} weeks, ${gameState.healthy} citizens remain (${survivalRate}% survival rate). ${gameState.dead} died—close to the historical average for plague-struck cities. Your decisions reflected the difficult choices medieval leaders faced. ${gameState.trust < 50 ? 'Low public trust undermined some of your health measures.' : 'Public cooperation helped your policies succeed.'} Historians note that cities enforcing quarantine fared better than those relying on prayer or bloodletting.`;
-            } else {
-                title = 'A Dark Chapter';
-                message = `After ${gameState.week} weeks, only ${gameState.healthy} survived of 1,000 (${survivalRate}% survival rate). ${gameState.dead} perished. Your town suffered worse than most. ${gameState.trust < 40 ? 'Widespread distrust of your leadership led citizens to ignore health orders, accelerating the spread.' : ''} Medieval misconceptions like miasma theory, bloodletting, and mass gatherings accelerated death. Modern understanding of disease transmission shows isolation and sanitation were the true defenses.`;
-            }
-            
-            message += `\n\nFinal Economy: ${Math.round(gameState.economy)}% | Public Trust: ${Math.round(gameState.trust)}%`;
-            
-            document.getElementById('gameOverTitle').textContent = title;
-            document.getElementById('gameOverMessage').textContent = message;
-            document.getElementById('gameOverScreen').style.display = 'flex';
+            document.getElementById('characterSheet').innerHTML = statsHTML;
         }
 
-        // Restart game
-        function restartGame() {
-            gameState = {
-                week: 1,
-                healthy: 1000,
-                infected: 0,
-                dead: 0,
-                economy: 100,
-                trust: 100,
-                quarantineActive: false,
-                portClosed: false,
-                isolationActive: false,
-                phlebotomyUsed: false,
-                prayerUsed: false,
-                baseInfectionRate: 0.05,
-                scenarioType: 'port'
+        function updateDisplay() {
+            document.getElementById('healthValue').textContent = gameState.health;
+            document.getElementById('goldValue').textContent = gameState.gold;
+            document.getElementById('townsValue').textContent = gameState.townsVisited;
+            
+            const healthPercent = Math.max(0, Math.round((gameState.health / gameState.maxHealth) * 100));
+            document.getElementById('healthBar').style.width = healthPercent + '%';
+            document.getElementById('healthBar').textContent = `${gameState.health}/${gameState.maxHealth}`;
+            
+            // Make inventory items clickable with emojis
+            const itemEmojis = {
+                'Bread': '🍞', 'Medicine': '🧪', 'Ancient Tome': '📖',
+                'Training Weights': '💪', 'Lucky Charm': '🍀', 'Fine Clothes': '👔',
+                'Medicine Pouch': '💼', 'Herb Mask': '😷', 'Travel Map': '🗺️',
+                'Vinegar': '🧴', 'Medical Herbs': '🌿', 'Blessed Items': '✝️'
             };
             
-            document.getElementById('gameOverScreen').style.display = 'none';
-            document.getElementById('logEntries').innerHTML = '<div class="event-entry">Your journey begins anew. May wisdom guide your choices.</div>';
-            
-            updateStats();
-            document.getElementById('weekNum').textContent = 1;
-            initGame();
+            const inventoryEl = document.getElementById('inventory');
+            if (gameState.inventory.length === 0) {
+                inventoryEl.innerHTML = 'Empty';
+            } else {
+                inventoryEl.innerHTML = gameState.inventory.map((item, index) => {
+                    const emoji = itemEmojis[item] || '📦';
+                    return `<span class="item clickable-item" data-item-name="${item}" data-item-index="${index}" title="Click to use or view">${emoji} ${item}</span>`;
+                }).join('');
+                
+                // Add click handlers using event delegation
+                inventoryEl.querySelectorAll('.clickable-item').forEach(el => {
+                    el.addEventListener('click', function() {
+                        const itemName = this.getAttribute('data-item-name');
+                        const itemIndex = parseInt(this.getAttribute('data-item-index'));
+                        useItem(itemName, itemIndex);
+                    });
+                });
+            }
         }
 
-        // Start game on load
-        window.onload = initGame;
+        function useItem(itemName, itemIndex) {
+            const itemEffects = {
+                'Bread': { type: 'health', value: 15, consumable: true, emoji: '🍞', desc: 'Freshly baked bread restores your energy' },
+                'Medicine': { type: 'health', value: 25, consumable: true, emoji: '🧪', desc: 'Medieval herbal medicine that helps recovery' },
+                'Ancient Tome': { type: 'stat', stat: 'wisdom', value: 1, consumable: true, emoji: '📖', desc: 'Study this ancient book to gain wisdom' },
+                'Training Weights': { type: 'stat', stat: 'strength', value: 1, consumable: true, emoji: '💪', desc: 'Train with these to become stronger' },
+                'Lucky Charm': { type: 'stat', stat: 'luck', value: 1, consumable: true, emoji: '🍀', desc: 'A magical charm that brings good fortune' },
+                'Fine Clothes': { type: 'stat', stat: 'charisma', value: 1, consumable: true, emoji: '👔', desc: 'Wearing fine clothes makes you more persuasive' },
+                'Medicine Pouch': { type: 'none', emoji: '💼', desc: 'Basic supplies for your journey (passive benefit)' },
+                'Herb Mask': { type: 'none', emoji: '😷', desc: 'Protects against bad air (passive benefit)' },
+                'Travel Map': { type: 'none', emoji: '🗺️', desc: 'Shows safe routes (passive benefit)' },
+                'Vinegar': { type: 'none', emoji: '🧴', desc: 'For washing hands (passive benefit)' },
+                'Medical Herbs': { type: 'none', emoji: '🌿', desc: 'Helps with symptoms (passive benefit)' },
+                'Blessed Items': { type: 'none', emoji: '✝️', desc: 'Religious protection (passive benefit)' }
+            };
+
+            const item = itemEffects[itemName];
+            if (!item) return;
+
+            if (item.type === 'none') {
+                showInfoModal(`${item.emoji} ${itemName}`, item.desc);
+                return;
+            }
+
+            let effectText = '';
+            if (item.type === 'health') {
+                const potentialHealing = Math.min(item.value, gameState.maxHealth - gameState.health);
+                if (potentialHealing <= 0) {
+                    showInfoModal(`${item.emoji} ${itemName}`, "You're already at full health! Save this for when you're injured.");
+                    return;
+                }
+                effectText = `${item.desc}<br><br><strong>Effect:</strong> Restore ${item.value} health<br>Current: ${gameState.health}/${gameState.maxHealth}`;
+            } else if (item.type === 'stat') {
+                effectText = `${item.desc}<br><br><strong>Effect:</strong> Permanently +1 ${item.stat}<br>Current ${item.stat}: ${gameState[item.stat]}`;
+            }
+
+            const confirmHTML = `
+                <div class="outcome-modal">
+                    <div class="outcome-content">
+                        <div class="outcome-header">${item.emoji} Use ${itemName}?</div>
+                        <div class="outcome-text" style="text-align: center;">
+                            ${effectText}
+                        </div>
+                        <div style="display: flex; gap: 10px; margin-top: 20px;">
+                            <button class="continue-btn" onclick="confirmUseItem('${itemName}', ${itemIndex})" style="flex: 1;">✓ Use Item</button>
+                            <button class="continue-btn" onclick="closeModal()" style="flex: 1; background: #8B4513;">✗ Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('outcomeModal').innerHTML = confirmHTML;
+            document.getElementById('outcomeModal').style.display = 'flex';
+        }
+
+        function confirmUseItem(itemName, itemIndex) {
+            const itemEffects = {
+                'Bread': { type: 'health', value: 15 },
+                'Medicine': { type: 'health', value: 25 },
+                'Ancient Tome': { type: 'stat', stat: 'wisdom', value: 1 },
+                'Training Weights': { type: 'stat', stat: 'strength', value: 1 },
+                'Lucky Charm': { type: 'stat', stat: 'luck', value: 1 },
+                'Fine Clothes': { type: 'stat', stat: 'charisma', value: 1 }
+            };
+
+            const item = itemEffects[itemName];
+            let resultText = '';
+
+            if (item.type === 'health') {
+                const oldHealth = gameState.health;
+                gameState.health = Math.min(gameState.maxHealth, gameState.health + item.value);
+                const actualHealing = gameState.health - oldHealth;
+                resultText = `You ate the ${itemName} and restored ${actualHealing} health!<br>Health: ${gameState.health}/${gameState.maxHealth}`;
+            } else if (item.type === 'stat') {
+                gameState[item.stat] += item.value;
+                resultText = `You used ${itemName} and permanently gained +${item.value} ${item.stat}!<br>New ${item.stat}: ${gameState[item.stat]}`;
+                updateCharacterSheetWithStats();
+            }
+
+            gameState.inventory.splice(itemIndex, 1);
+            updateDisplay();
+            showInfoModal("✓ Item Used Successfully!", resultText);
+        }
+
+        function showInfoModal(title, message) {
+            const modalHTML = `
+                <div class="outcome-modal">
+                    <div class="outcome-content">
+                        <div class="outcome-header">${title}</div>
+                        <div class="outcome-text" style="text-align: center;">${message}</div>
+                        <button class="continue-btn" onclick="closeModal()">Continue →</button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('outcomeModal').innerHTML = modalHTML;
+            document.getElementById('outcomeModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('outcomeModal').style.display = 'none';
+        }
+
+        function showShop(returnLocation) {
+            const currentLoc = returnLocation; // Store for use in template
+            const shopItems = [
+                { name: 'Bread', cost: 15, emoji: '🍞', desc: '+15 health' },
+                { name: 'Medicine', cost: 40, emoji: '🧪', desc: '+25 health' },
+                { name: 'Ancient Tome', cost: 60, emoji: '📖', desc: '+1 Wisdom permanently' },
+                { name: 'Training Weights', cost: 60, emoji: '💪', desc: '+1 Strength permanently' },
+                { name: 'Lucky Charm', cost: 55, emoji: '🍀', desc: '+1 Luck permanently' },
+                { name: 'Fine Clothes', cost: 55, emoji: '👔', desc: '+1 Charisma permanently' }
+            ];
+
+            const shopHTML = `
+                <div class="outcome-modal">
+                    <div class="outcome-content" style="max-width: 600px;">
+                        <div class="outcome-header">🛒 Merchant's Shop</div>
+                        <div class="outcome-text" style="text-align: left;">
+                            <strong>Your Gold: <span id="shop-gold">${gameState.gold}</span></strong><br><br>
+                            ${shopItems.map(item => {
+                                const canAfford = gameState.gold >= item.cost;
+                                return `<div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; margin: 5px 0; background: rgba(80,60,40,0.5); border-radius: 5px; ${canAfford ? 'cursor: pointer; border: 2px solid #d4af37;' : 'opacity: 0.5; border: 2px solid #555;'}" ${canAfford ? `onclick="buyItemInShop('${item.name}', ${item.cost}, ${currentLoc})"` : ''}>
+                                    <span>${item.emoji} <strong>${item.name}</strong> - ${item.desc}</span>
+                                    <span style="color: #d4af37; font-weight: bold;">${item.cost} gold</span>
+                                </div>`;
+                            }).join('')}
+                        </div>
+                        <button class="continue-btn" onclick="leaveShop(${currentLoc})" style="margin-top: 15px;">Leave Shop →</button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('outcomeModal').innerHTML = shopHTML;
+            document.getElementById('outcomeModal').style.display = 'flex';
+        }
+
+        function buyItemInShop(itemName, cost, returnLocation) {
+            // Double-check we have enough gold (safeguard against race conditions)
+            if (gameState.gold < cost) {
+                console.log("Not enough gold!");
+                return;
+            }
+
+            gameState.gold -= cost;
+            gameState.inventory.push(itemName);
+            updateDisplay();
+
+            // Update shop display immediately
+            const shopGoldEl = document.getElementById('shop-gold');
+            if (shopGoldEl) {
+                shopGoldEl.textContent = gameState.gold;
+            }
+            
+            // Show brief confirmation
+            const itemEmojis = {
+                'Bread': '🍞', 'Medicine': '🧪', 'Ancient Tome': '📖',
+                'Training Weights': '💪', 'Lucky Charm': '🍀', 'Fine Clothes': '👔'
+            };
+            
+            const confirmDiv = document.createElement('div');
+            confirmDiv.style = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.9); color: #d4af37; padding: 20px 40px; border: 2px solid #d4af37; border-radius: 10px; z-index: 10000; font-size: 1.2em;';
+            confirmDiv.textContent = `✓ Purchased ${itemEmojis[itemName]} ${itemName}!`;
+            document.body.appendChild(confirmDiv);
+            
+            setTimeout(() => {
+                if (document.body.contains(confirmDiv)) {
+                    document.body.removeChild(confirmDiv);
+                }
+                showShop(returnLocation); // Refresh shop with same return location
+            }, 600);
+        }
+
+        function leaveShop(returnLocation) {
+            closeModal();
+            refreshLocation(returnLocation); // Return to same location without incrementing counter
+        }
+
+        function buyItem(itemName, cost) {
+            // Legacy function - redirect to new one
+            buyItemInShop(itemName, cost);
+        }
+
+        function showLocation(locationIndex) {
+            if (gameState.health <= 0) {
+                showGameOver(false);
+                return;
+            }
+
+            if (locationIndex >= storyPath.length) {
+                showGameOver(true);
+                return;
+            }
+
+            const location = storyPath[locationIndex];
+            gameState.currentLocation = locationIndex;
+            gameState.townsVisited++;
+
+            displayLocation(location);
+        }
+
+        function refreshLocation(locationIndex) {
+            // Show location without incrementing townsVisited (for returning from shop)
+            if (gameState.health <= 0) {
+                showGameOver(false);
+                return;
+            }
+
+            if (locationIndex >= storyPath.length) {
+                showGameOver(true);
+                return;
+            }
+
+            const location = storyPath[locationIndex];
+            gameState.currentLocation = locationIndex;
+            
+            displayLocation(location);
+        }
+
+        function displayLocation(location) {
+            let storyHTML = `
+                <div class="location-header">${location.name}</div>
+                <p>${location.text}</p>
+            `;
+
+            if (location.knowledge) {
+                storyHTML += `
+                    <div class="knowledge-box">
+                        <h3>📜 Historical Knowledge</h3>
+                        <p>${location.knowledge}</p>
+                    </div>
+                `;
+            }
+
+            document.getElementById('storyContent').innerHTML = storyHTML;
+            showChoices(location.choices);
+            updateDisplay();
+        }
+
+        function showChoices(choices) {
+            const container = document.getElementById('choicesContainer');
+            container.innerHTML = '';
+
+            choices.forEach((choice) => {
+                const button = document.createElement('button');
+                button.className = 'choice-btn';
+                
+                let buttonText = choice.text;
+                
+                if (choice.goldCost && gameState.charisma > 0) {
+                    const discount = Math.min(gameState.charisma * 2, choice.goldCost * 0.4);
+                    const actualCost = Math.max(Math.round(choice.goldCost - discount), 1);
+                    
+                    if (actualCost < choice.goldCost) {
+                        buttonText = buttonText.replace(`Costs ${choice.goldCost} gold`, 
+                            `Costs ${actualCost} gold (${choice.goldCost} - ${Math.round(discount)} charisma)`);
+                    }
+                    
+                    if (gameState.gold < actualCost) {
+                        button.disabled = true;
+                        buttonText += ' [Not enough gold]';
+                    }
+                } else if (choice.goldCost && gameState.gold < choice.goldCost) {
+                    button.disabled = true;
+                    buttonText += ' [Not enough gold]';
+                }
+                
+                button.textContent = buttonText;
+                button.onclick = () => handleChoice(choice);
+                container.appendChild(button);
+            });
+        }
+
+        function handleChoice(choice) {
+            let actualCost = choice.goldCost || 0;
+            if (actualCost > 0 && gameState.charisma > 0) {
+                const discount = Math.min(gameState.charisma * 2, actualCost * 0.4);
+                actualCost = Math.max(Math.round(actualCost - discount), 1);
+            }
+
+            if (actualCost > 0) {
+                gameState.gold -= actualCost;
+            }
+
+            if (choice.diceRoll) {
+                // Show "Roll the Dice" button modal
+                showRollDicePrompt(choice);
+            } else if (choice.special === 'shop') {
+                // Special case for shop - open it and return to current location
+                showShop(gameState.currentLocation);
+            } else if (choice.immediate) {
+                const message = choice.effect();
+                // Check if player died from this choice
+                if (gameState.health <= 0) {
+                    showOutcomeModal("💀 Critical Injury!", message + "\n\nYou collapsed...", () => showGameOver(false));
+                } else {
+                    showOutcomeModal("Outcome", message, () => showTransition(choice.nextLocation));
+                }
+            } else {
+                if (choice.effect) {
+                    const message = choice.effect();
+                    // Check if player died from this choice
+                    if (gameState.health <= 0) {
+                        showOutcomeModal("💀 Critical Injury!", message + "\n\nYou collapsed...", () => showGameOver(false));
+                    } else {
+                        showOutcomeModal("Outcome", message, () => showTransition(choice.nextLocation));
+                    }
+                } else {
+                    showTransition(choice.nextLocation);
+                }
+            }
+
+            updateDisplay();
+        }
+
+        function showRollDicePrompt(choice) {
+            // Apply low health penalty to difficulty
+            let adjustedDifficulty = choice.difficulty;
+            let difficultyWarning = '';
+            
+            if (gameState.health < 30) {
+                adjustedDifficulty += 3;
+                difficultyWarning = '<br><span style="color: #e63946;">⚠️ You are badly weakened! (+3 difficulty)</span>';
+            } else if (gameState.health < 50) {
+                adjustedDifficulty += 2;
+                difficultyWarning = '<br><span style="color: #f4a261;">⚠️ You are weakened! (+2 difficulty)</span>';
+            } else if (gameState.health < 70) {
+                adjustedDifficulty += 1;
+                difficultyWarning = '<br><span style="color: #e9c46a;">⚠️ You feel unwell. (+1 difficulty)</span>';
+            }
+            
+            const modalHTML = `
+                <div class="outcome-modal">
+                    <div class="outcome-content">
+                        <div class="outcome-header">🎲 Time to Roll! 🎲</div>
+                        <div class="outcome-text" style="text-align: center;">
+                            You've made your choice. Now let fate decide...<br><br>
+                            <strong>Difficulty: ${adjustedDifficulty}+</strong>
+                            ${difficultyWarning}
+                            ${gameState.wisdom > 0 || gameState.luck > 0 ? 
+                                `<br><span style="color: #d4af37;">You'll get bonuses from your stats!</span>` : 
+                                ''}
+                        </div>
+                        <button class="continue-btn" onclick="executeRoll()">🎲 Roll the Dice! 🎲</button>
+                    </div>
+                </div>
+            `;
+
+            const modalContainer = document.getElementById('outcomeModal');
+            modalContainer.innerHTML = modalHTML;
+            modalContainer.style.display = 'flex';
+
+            // Store the adjusted difficulty with the choice
+            choice.adjustedDifficulty = adjustedDifficulty;
+            window.currentChoice = choice;
+        }
+
+        function executeRoll() {
+            const choice = window.currentChoice;
+            
+            // Show rolling animation
+            showRollingAnimation(choice);
+        }
+
+        function showRollingAnimation(choice) {
+            const modalHTML = `
+                <div class="outcome-modal">
+                    <div class="outcome-content">
+                        <div class="outcome-header">🎲 Rolling... 🎲</div>
+                        <div class="dice-rolling-container">
+                            <div class="dice-spinner">🎲</div>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" id="rollProgressBar"></div>
+                        </div>
+                        <div class="outcome-text" style="text-align: center; margin-top: 20px;">
+                            Fate is deciding your future...
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const modalContainer = document.getElementById('outcomeModal');
+            modalContainer.innerHTML = modalHTML;
+            modalContainer.style.display = 'flex';
+
+            // Start progress bar animation
+            const progressBar = document.getElementById('rollProgressBar');
+            let width = 0;
+            const interval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(interval);
+                    // After animation, show the result
+                    setTimeout(() => {
+                        rollDice(choice);
+                    }, 200);
+                } else {
+                    width += 5;
+                    progressBar.style.width = width + '%';
+                }
+            }, 50); // 2 seconds total (100% / 5 per step * 50ms = 2000ms)
+        }
+
+        function rollDice(choice) {
+            const baseRoll = Math.floor(Math.random() * 20) + 1;
+            let totalRoll = baseRoll;
+            let bonusText = '';
+            
+            // Use adjusted difficulty if low health penalty was applied
+            const difficulty = choice.adjustedDifficulty || choice.difficulty;
+            
+            if (difficulty) {
+                // Only apply the relevant stat bonus based on check type
+                // Check the choice text to determine what type of check it is
+                const choiceText = choice.text.toLowerCase();
+                
+                if (choiceText.includes('wisdom check') && gameState.wisdom > 0) {
+                    totalRoll += gameState.wisdom;
+                    bonusText += ` +${gameState.wisdom} Wisdom`;
+                } else if (choiceText.includes('strength check') && gameState.strength > 0) {
+                    totalRoll += gameState.strength;
+                    bonusText += ` +${gameState.strength} Strength`;
+                } else if (choiceText.includes('charisma check') && gameState.charisma > 0) {
+                    totalRoll += gameState.charisma;
+                    bonusText += ` +${gameState.charisma} Charisma`;
+                } else if ((choiceText.includes('health check') || choiceText.includes('risky') || choiceText.includes('gamble')) && gameState.luck > 0) {
+                    // Risky choices benefit from luck
+                    totalRoll += gameState.luck;
+                    bonusText += ` +${gameState.luck} Luck`;
+                }
+                // If no specific check type mentioned, no bonus applied
+            }
+            
+            const success = totalRoll >= difficulty;
+            let resultMessage;
+            
+            if (success) {
+                resultMessage = choice.success ? choice.success() : "Success!";
+            } else {
+                resultMessage = choice.failure ? choice.failure() : "Failed...";
+                
+                // Apply extra damage if health is very low (wounded and failing makes things worse)
+                if (gameState.health < 40 && !resultMessage.includes("FAILURE")) {
+                    const extraDamage = Math.floor(Math.random() * 10) + 5;
+                    gameState.health -= extraDamage;
+                    resultMessage += `\n\nYour weakened body couldn't handle this setback. (-${extraDamage} additional health)`;
+                }
+            }
+
+            const rollDisplay = baseRoll === totalRoll ? 
+                `You rolled a ${baseRoll}!` : 
+                `You rolled a ${baseRoll}${bonusText} = ${totalRoll}!`;
+
+            const fullMessage = `${rollDisplay}\n(Needed ${difficulty}+)\n\n${resultMessage}`;
+
+            // Check if player died from this roll
+            if (gameState.health <= 0 && !resultMessage.includes("SUCCESS!")) {
+                showOutcomeModal(
+                    "💀 You Have Died!",
+                    fullMessage + "\n\n💀 Your journey ends here... 💀",
+                    () => showGameOver(false),
+                    totalRoll
+                );
+                return;
+            }
+
+            showOutcomeModal(
+                success ? "🎲 Success!" : "🎲 Failed!",
+                fullMessage,
+                () => {
+                    if (choice.nextLocation === 6) {
+                        // Final location - check for special endings
+                        if (resultMessage.includes("SUCCESS!")) {
+                            showGameOver(true);
+                        } else if (resultMessage.includes("PARTIAL")) {
+                            showPartialVictory();
+                        } else if (gameState.health <= 0 || resultMessage.includes("FAILURE")) {
+                            showGameOver(false);
+                        } else {
+                            showGameOver(true);
+                        }
+                    } else if (gameState.health <= 0) {
+                        showGameOver(false);
+                    } else {
+                        showTransition(choice.nextLocation);
+                    }
+                },
+                totalRoll
+            );
+        }
+
+        // NEW: Transition screen between locations
+        function showTransition(nextLocation) {
+            if (nextLocation >= storyPath.length) {
+                showGameOver(true);
+                return;
+            }
+
+            const nextLocationData = storyPath[nextLocation];
+            
+            // Show health warning if critical
+            let healthWarning = '';
+            let healthColor = '#d4af37';
+            
+            if (gameState.health <= 20) {
+                healthWarning = '<br><span style="color: #e63946; font-size: 1.1em;">⚠️ CRITICAL CONDITION! ⚠️</span>';
+                healthColor = '#e63946';
+            } else if (gameState.health <= 40) {
+                healthWarning = '<br><span style="color: #f4a261;">⚠️ Badly injured!</span>';
+                healthColor = '#f4a261';
+            } else if (gameState.health <= 60) {
+                healthWarning = '<br><span style="color: #e9c46a;">⚠️ Wounded</span>';
+                healthColor = '#e9c46a';
+            }
+            
+            const transitionHTML = `
+                <div class="outcome-modal">
+                    <div class="outcome-content">
+                        <div class="outcome-header">📍 Journey Continues...</div>
+                        <div class="outcome-text" style="text-align: center; font-size: 1.3em;">
+                            <strong style="color: #d4af37;">Next Stop:</strong><br><br>
+                            ${nextLocationData.name}
+                            <br><br>
+                            <span style="font-size: 0.9em; color: #c9a961;">
+                                <span style="color: ${healthColor};">Health: ${gameState.health}/${gameState.maxHealth}</span><br>
+                                Gold: ${gameState.gold}
+                            </span>
+                            ${healthWarning}
+                        </div>
+                        <button class="continue-btn" onclick="proceedToLocation(${nextLocation})">Continue Journey →</button>
+                    </div>
+                </div>
+            `;
+
+            const modalContainer = document.getElementById('outcomeModal');
+            modalContainer.innerHTML = transitionHTML;
+            modalContainer.style.display = 'flex';
+        }
+
+        function proceedToLocation(locationIndex) {
+            document.getElementById('outcomeModal').style.display = 'none';
+            showLocation(locationIndex);
+        }
+
+        // NEW: Outcome Modal with Continue Button
+        function showOutcomeModal(title, message, callback, diceRoll = null) {
+            const modalHTML = `
+                <div class="outcome-modal">
+                    <div class="outcome-content">
+                        <div class="outcome-header">${title}</div>
+                        ${diceRoll ? `<div class="dice-result">🎲 ${diceRoll}</div>` : ''}
+                        <div class="outcome-text">${message.replace(/\n/g, '<br>')}</div>
+                        <button class="continue-btn" onclick="closeOutcomeModal()">Continue →</button>
+                    </div>
+                </div>
+            `;
+
+            const modalContainer = document.getElementById('outcomeModal');
+            modalContainer.innerHTML = modalHTML;
+            modalContainer.style.display = 'flex';
+
+            window.currentCallback = callback;
+        }
+
+        function closeOutcomeModal() {
+            document.getElementById('outcomeModal').style.display = 'none';
+            if (window.currentCallback) {
+                window.currentCallback();
+                window.currentCallback = null;
+            }
+            updateDisplay();
+        }
+
+        function showPartialVictory() {
+            const gameOverHTML = `
+                <div class="game-over">
+                    <h2>💀 You Have Died 💀</h2>
+                    <p style="font-size: 1.2em; line-height: 1.8; margin: 20px 0;">
+                        ${gameState.characterName}, you nearly made it to the mountains, but caught the plague on the final leg of your journey.
+                        <br><br>
+                        Despite your best efforts, the Black Death claimed you. Your body couldn't fight off the infection. 
+                        You traveled through ${gameState.townsVisited} locations and learned much about survival, but in the end, 
+                        the plague was too deadly.
+                        <br><br>
+                        The Black Death killed about 1/3 of all Europeans. Even people who made good choices often died. 
+                        You experienced the harsh reality of medieval medicine—there was no cure.
+                    </p>
+                    <div class="knowledge-box">
+                        <h3>📊 ${gameState.characterName}'s Final Score: ${calculateScore(false)}</h3>
+                        <p>
+                            Towns Visited: ${gameState.townsVisited} × 20 = ${gameState.townsVisited * 20}<br>
+                            Gold Remaining: ${gameState.gold}<br>
+                            People Helped: ${gameState.helpedOthers} × 10 = ${gameState.helpedOthers * 10}<br>
+                            Character Stats: ${gameState.wisdom + gameState.strength + gameState.luck + gameState.charisma} × 5 = ${(gameState.wisdom + gameState.strength + gameState.luck + gameState.charisma) * 5}<br>
+                            Survival Bonus: 0 (died from plague)
+                        </p>
+                    </div>
+                    <button class="restart-btn" onclick="location.reload()">🔄 Try Again</button>
+                </div>
+            `;
+
+            document.getElementById('storyContent').innerHTML = gameOverHTML;
+            document.getElementById('choicesContainer').innerHTML = '';
+        }
+
+        function calculateScore(survived) {
+            const survivalBonus = survived ? 50 : 0;
+            const helpBonus = gameState.helpedOthers * 10;
+            const statBonus = (gameState.wisdom + gameState.strength + gameState.luck + gameState.charisma) * 5;
+            return gameState.townsVisited * 20 + gameState.gold + survivalBonus + helpBonus + statBonus;
+        }
+
+        function showGameOver(survived) {
+            const finalScore = calculateScore(survived);
+
+            let message, endText;
+            
+            if (survived) {
+                message = "🎉 YOU SURVIVED! 🎉";
+                endText = `Congratulations, ${gameState.characterName}! You survived the Black Death! You made smart choices to stay safe. You ended with ${gameState.health} health and ${gameState.gold} gold.<br><br>Avoiding crowds, staying clean, and being careful around rats increased survival chances. Medieval people didn't know about germs, but those who did these things were more likely to survive.<br><br>You were one of the lucky ones who lived when millions died.`;
+            } else {
+                message = "💀 Journey's End 💀";
+                endText = `${gameState.characterName}, you did not survive the plague.<br><br>The Black Death was incredibly deadly. Even people who made good choices sometimes got sick and died. Remember: About 1/3 of all Europeans died during this pandemic. You experienced what millions faced during one of history's worst pandemics.<br><br>Medieval doctors had no antibiotics or understanding of bacteria. Once infected, survival was mostly luck.`;
+            }
+
+            const gameOverHTML = `
+                <div class="game-over">
+                    <h2>${message}</h2>
+                    <p style="font-size: 1.2em; line-height: 1.8; margin: 20px 0;">${endText}</p>
+                    <div class="knowledge-box">
+                        <h3>📊 ${gameState.characterName}'s Final Score: ${finalScore}</h3>
+                        <p>
+                            Towns Visited: ${gameState.townsVisited} × 20 = ${gameState.townsVisited * 20}<br>
+                            Gold Remaining: ${gameState.gold}<br>
+                            People Helped: ${gameState.helpedOthers} × 10 = ${gameState.helpedOthers * 10}<br>
+                            Character Stats: ${gameState.wisdom + gameState.strength + gameState.luck + gameState.charisma} × 5 = ${(gameState.wisdom + gameState.strength + gameState.luck + gameState.charisma) * 5}<br>
+                            Survival Bonus: ${survived ? 50 : 0}
+                        </p>
+                    </div>
+                    <button class="restart-btn" onclick="location.reload()">🔄 ${survived ? 'Play Again' : 'Try Again'}</button>
+                </div>
+            `;
+
+            document.getElementById('storyContent').innerHTML = gameOverHTML;
+            document.getElementById('choicesContainer').innerHTML = '';
+        }
+
+        // Start the game
+        showCharacterCreation();
     </script>
 </body>
 </html>
